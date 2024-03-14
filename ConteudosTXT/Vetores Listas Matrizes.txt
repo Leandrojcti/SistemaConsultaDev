@@ -1,0 +1,315 @@
+VETORES
+
+• Em programação, "vetor" é o nome dado a arranjos unidimensionais
+                                                                       
+• Arranjo é uma estrutura de dados:
+   • Homogênea (dados do mesmo tipo)
+   • Ordenada (elementos acessados por meio de posições)                
+                                                                              
+   • Alocada de uma vez só, em um bloco contíguo de memória
+                                                                      
+                                                                             
+
+• Vantagens:                                                           
+                                                                             
+   • Acesso imediato aos elementos pela sua posição
+• Desvantagens:
+   • Tamanho fixo
+   • Dificuldade para se realizar inserções e deleções
+
+
+
+ Problema exemplo 1
+ Fazer um programa para ler um número inteiro N e a altura de N pessoas.
+ Armazene as N alturas em um vetor. Em seguida, mostrar a altura média dessas
+ pessoas.
+
+
+Exemplo:
+ Entrada:                             Saída:
+ 3                                    AVERAGE HEIGHT = 1.69
+ 1.72
+ 1.56
+ 1.80
+
+using System;
+using System.Globalization;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+             int n = int.Parse(Console.ReadLine());
+
+             double[] vect = new double[n];
+
+             for (int i = 0; i < n; i++) {
+                 vect[i] = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+             }
+
+             double sum = 0.0;
+             for (int i = 0; i < n; i++) {
+                 sum += vect[i];
+             }
+
+             double avg = sum / n;
+
+             Console.WriteLine("AVERAGE HEIGHT = " + avg.ToString("F2", CultureInfo.InvariantCulture));
+         }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+ Exercício de fixação
+ A dona de um pensionato possui dez quartos para alugar para estudantes,
+ sendo esses quartos identificados pelos números 0 a 9.
+
+ Quando um estudante deseja alugar um quarto, deve-se registrar o nome
+ e email deste estudante.
+
+ Fazer um programa que inicie com todos os dez quartos vazios, e depois
+ leia uma quantidade N representando o número de estudantes que vão
+ alugar quartos (N pode ser de 1 a 10). Em seguida, registre o aluguel dos
+ N estudantes. Para cada registro de aluguel, informar o nome e email do
+ estudante, bem como qual dos quartos ele escolheu (de 0 a 9). Suponha
+ que seja escolhido um quarto vago. Ao final, seu programa deve imprimir
+ um relatório de todas ocupações do pensionato, por ordem de quarto,
+ conforme exemplo.
+
+
+Quantos quartos serão alugados? 3
+
+Aluguel #1:
+Nome: Maria Green
+Email: maria@gmail.com
+Quarto: 5
+
+Aluguel #2:
+Nome: Marco Antonio
+Email: marco@gmail.com
+Quarto: 1
+
+Aluguel #3:
+Nome: Alex Brown
+Email: alex@gmail.com
+Quarto: 8
+
+Quartos ocupados:
+1: Marco Antonio, marco@gmail.com
+5: Maria Green, maria@gmail.com
+8: Alex Brown, alex@gmail.com
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+------------------------------------------
+CLASSE ESTUDANTE
+namespace pensionato {
+    class Estudante {
+
+        public string Nome { get; set; }
+
+        public string Email { get; set; }
+
+        public Estudante(string nome, string email) {
+            Nome = nome;
+            Email = email;
+
+        }
+        public override string ToString() {
+            return Nome + ", " + Email;
+        }
+    
+    }
+}
+-------------------------------------------
+PROGRAM
+using System;
+
+namespace pensionato {
+    class Program {
+        static void Main(string[] args) {
+            
+            Estudante[] vet = new Estudante[10];
+
+            Console.WriteLine("Quantidade de quartos a ser alugados:");
+            int n = int.Parse(Console.ReadLine());
+            for (int i = 1; i <= n; i++) {
+
+                Console.WriteLine($"aluguel #{i} ");
+
+                Console.Write("Nome: ");
+                string nome = Console.ReadLine();
+
+                Console.Write("Email:" );
+                string email =  Console.ReadLine();
+
+                Console.Write("Quarto: ");
+                int quarto = int.Parse(Console.ReadLine());
+
+                vet[quarto] = new Estudante(nome, email);
+
+               }
+
+            Console.WriteLine();
+            Console.WriteLine("Quartos ocupados:");
+            for (int i = 0; i < 10; i++) {
+                if (vet[i] != null) {
+                    Console.WriteLine(i + ": " + vet[i]);
+                }
+            }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+ LAÇO FOREACH
+
+Sintaxe opcional e simplificada para percorrer coleções
+
+Leitura: "para cada objeto 'obj' contido em vect, faça:"
+
+
+string[] vect = new string[] { "Maria", "Bob", "Alex"};
+
+foreach (string obj in vect) {     //string= tipo/ obj= nome dado ao objeto no laço/ vect= Nome da coleção que sera percorrida
+    Console.WriteLine(obj);
+}
+
+///////////////////////////////////////////////////////////////
+
+LISTAS                                                                       
+
+• Lista é uma estrutura de dados:                                           
+    •   Homogênea (dados do mesmo tipo)
+    •   Ordenada (elementos acessados por meio de posições)
+    •   Inicia vazia, e seus elementos são alocados sob demanda
+    •   Cada elemento ocupa um "nó" (ou nodo) da lista                        
+
+• Classe: List
+• Namespace: System.Collections.Generic                         
+
+
+• Vantagens:                                                                        
+                                                                                          
+    • Tamanho variável
+    • Facilidade para se realizar inserções e deleções                             
+                                                                                          
+• Desvantagens:
+    • Acesso sequencial aos elementos *                                             
+                                                                                          
+
+                                                                         
+Listas - Parte 2
+Demo
+• Inserir elemento na lista: Add, Insert
+• Tamanho da lista: Count
+• Encontrar primeiro ou último elementos da lista que satisfaça um predicado:
+  list.Find, list.FindLast
+• Encontrar primeira ou última posição de elemento da lista que satisfaça um
+  predicado: list.FindIndex, list.FindLastIndex
+• Filtrar a lista com base em um predicado: list.FindAll
+• Remover elementos da lista: Remove, RemoveAll, RemoveAt,
+  RemoveRange
+
+EXERCÍCIOS DE FIXAÇÃO (LISTAS)
+
+Fazer um programa para ler um número inteiro N e depois os dados (id, nome e salario) de
+N funcionários. Não deve haver repetição de id.
+
+Em seguida, efetuar o aumento de X por cento no salário de um determinado funcionário.
+Para isso, o programa deve ler um id e o valor X. Se o id informado não existir, mostrar uma
+mensagem e abortar a operação. Ao final, mostrar a listagem atualizada dos funcionários,
+conforme exemplos.
+
+Lembre-se de aplicar a técnica de encapsulamento para não permitir que o salário possa
+ser mudado livremente. Um salário só pode ser aumentado com base em uma operação de
+aumento por porcentagem dada.
+
+(exemplo na próxima página)
+
+
+
+
+Quantos funcionários serão cadastrados? 3
+Funcionário #1:
+Id: 333
+Name: Maria Brown
+Salary: 4000.00
+
+Funcionário #2:
+Id: 536
+Name: Alex Grey
+Salary: 3000.00
+
+Funcionário #3:
+Id: 772
+Name: Bob Green
+Salary: 5000.00
+
+Informe o id do funcionário que terá aumento salarial: 536
+Insira a porcentagem: 10,0
+
+Lista atualizada de funcionários:
+333, Maria Brown, 4000.00
+536, Alex Grey, 3300.00
+772, Bob Green, 5000.00
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Matrizes
+using System;
+
+namespace matrizes_ex_sistema_consulta
+{
+      class Program
+	{
+		static void Main(string[] args)
+		{
+			int[,] matriz = new int[3, 3];  //cria a matriz e inicia ela (new) com 3x3 de inteiros
+
+			// Inserir dados na matriz
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					Console.WriteLine("Digite o valor para a posição [{0},{1}]:", i, j);
+					matriz[i, j] = Convert.ToInt32(Console.ReadLine());
+
+				}
+			}
+
+
+			// Exibir a matriz
+			Console.WriteLine("Matriz 3x3:");
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					Console.Write(matriz[i, j] + " ");
+				}
+			}
+
+    }
+  }
+}
+
+     
+  
+
+-----------------------------------------------------------------------------------------------------
+
+    Neste exemplo, o loop externo percorre as linhas da matriz, e o loop interno percorre as colunas. 
+Dentro do loop, você será solicitado a digitar o valor para cada posição da matriz usando 
+Console.WriteLine  e Console.ReadLine. 
+O valor inserido é convertido para um inteiro usando Convert.ToInt32 e armazenado na matriz.
+
+Em seguida, a matriz é exibida usando Console.WriteLine e Console.Write. Cada valor da matriz é 
+exibido na mesma linha, 
+e uma quebra de linha é adicionada após exibir todos os valores de uma linha.
+
+Ao executar o programa, você poderá inserir os valores para preencher a matriz 3x3 e, 
+em seguida, a matriz será exibida no console.
+
+
+
+
+
+

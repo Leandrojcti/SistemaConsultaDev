@@ -1,0 +1,268 @@
+ Exceções
+• Uma exceção é qualquer condição de erro ou comportamento 
+inesperado encontrado por um programa em execução
+• No .NET, uma exceção é um objeto herdado da classe 
+System.Exception
+• Quando lançada, uma exceção é propagada na pilha de chamadas de 
+métodos em execução, até que seja capturada (tratada) ou o 
+programa seja encerrado
+
+Estrutura try-catch
+• Bloco try
+• Contém o código que representa a execução normal do trecho de código que 
+pode acarretar em uma exceção
+• Bloco catch
+• Contém o código a ser executado caso uma exceção ocorra
+• Deve ser especificado o tipo da exceção a ser tratada (upcasting é permitido)
+
+Sintaxe
+
+  try {
+  }
+  catch (ExceptionType e)  
+  } 
+  catch (ExceptionType e) {
+  }
+  catch (ExceptionType e) {
+  }
+
+
+using System;
+  namespace Course {
+     class Program {
+	static void Main(string[] args) {
+	    try {
+ 		int n1 = int.Parse(Console.ReadLine());
+		int n2 = int.Parse(Console.ReadLine());
+
+		int result = n1 / n2;
+		Console.WriteLine(result);
+	      }
+
+	      catch (DivideByZeroException) {
+ 	      Console.WriteLine("Division by zero is not allowed");
+ 	     }
+	     catch (FormatException e) {
+		Console.WriteLine("Format error! " + e.Message);
+	     }
+	}
+    }
+}
+-----------------------------------------------------------------------------------
+Bloco finally
+
+• É um bloco que contém código a ser executado independentemente de ter 
+ocorrido ou não uma exceção. 
+• Exemplo clássico: fechar um arquivo ou conexão de banco de dados ao final do 
+processamento.
+
+Sintaxe:
+
+	try {
+	}
+	catch (ExceptionType e) {
+	}
+	finally {
+	}
+
+----------------------------------------------------------------------------------
+EXERCÍCIO DE EXEMPLO:
+
+Fazer um programa para ler os dados de uma conta bancária e depois realizar um 
+saque nesta conta bancária, mostrando o novo saldo. Um saque não pode ocorrer 
+ou se não houver saldo na conta, ou se o valor do saque for superior ao limite de 
+saque da conta. Implemente a conta bancária conforme projeto abaixo:
+
+Enter account data
+Number: 8021
+Holder: Bob Brown
+Initial balance: 500.00
+Withdraw limit: 300.00
+Enter amount for withdraw: 100.00
+New balance: 400.00
+
+Enter account data
+Number: 8021
+Holder: Bob Brown
+Initial balance: 500.00
+Withdraw limit: 300.00
+Enter amount for withdraw: 400.00
+Withdraw error: The amount exceeds withdraw limit
+
+Enter account data
+Number: 8021
+Holder: Bob Brown
+Initial balance: 500.00
+Withdraw limit: 300.00
+Enter amount for withdraw: 800.00
+Withdraw error: The amount exceeds withdraw limit
+
+Enter account data
+Number: 8021
+Holder: Bob Brown
+Initial balance: 200.00
+Withdraw limit: 300.00
+Enter amount for withdraw: 250.00
+Withdraw error: Not enough balance
+
+------------------------------
+PT BR
+Insira os dados da conta
+Número: 8021
+Titular: Bob Brown
+Saldo inicial: 500,00
+Limite de retirada: 300,00
+Digite o valor para saque: 100,00
+Novo saldo: 400,00
+
+Insira os dados da conta
+Número: 8021
+Titular: Bob Brown
+Saldo inicial: 500,00
+Limite de retirada: 300,00
+Digite o valor para saque: 400,00
+Erro de retirada: o valor excede o limite de retirada
+
+Insira os dados da conta
+Número: 8021
+Titular: Bob Brown
+Saldo inicial: 500,00
+Limite de retirada: 300,00
+Digite o valor para saque: 800,00
+Erro de retirada: o valor excede o limite de retirada
+
+Insira os dados da conta
+Número: 8021
+Titular: Bob Brown
+Saldo inicial: 200,00
+Limite de retirada: 300,00
+Digite o valor para saque: 250,00
+Erro de saque: saldo insuficiente
+
+-------------------------------------------
+CÓDIGO
+
+Classe Excessão Personalizada
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ContaBancoExc.ExceptionsPerso
+{
+	//Esta classe cria uma excessão personalizada 
+	class ExcessaoDominio : ApplicationException
+	{
+		public ExcessaoDominio(string message) : base(message)
+		{
+
+		}
+	}
+}
+
+----------------------------------------
+CLASSE CONTA
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ContaBancoExc.ExceptionsPerso;
+
+namespace ContaBancoExc.Classes
+{
+	class Conta
+	{
+		public int NumeroConta { get; set; }
+		public string Titular { get; set; }
+		public double SaldoInicial { get; set; }
+		public double LimitSaque { get; set; }
+
+		public Conta(int numeroConta, string titular, double saldoInicial, double limitSaque)
+		{
+			NumeroConta = numeroConta;
+			Titular = titular;
+			SaldoInicial = saldoInicial;
+			LimitSaque = limitSaque;
+		}
+
+		public void Deposito( double Valor)
+		{
+			SaldoInicial = SaldoInicial + Valor;
+			
+		}
+
+		public void Saque(double Valor)
+		{
+			if (Valor > LimitSaque)
+			{ 
+				throw new ExcessaoDominio("Erro! Valor Solicitado Acima do Limite");  //seta as mensagens(string) que serão disparadas pelo bloco try
+			}                                                                             //se a condição for true o método throw encerra a execução e 
+			if (Valor > SaldoInicial)                                                     // envia para o try cat a string com a msg de erro
+			{
+				throw new ExcessaoDominio("Saldo Insuficiente!");
+			}
+			else
+			{
+				SaldoInicial = SaldoInicial - Valor;
+			}
+			
+			
+		}
+
+	
+	}
+}
+
+----------------------------------------------------
+PROGRAM
+using System;
+using ContaBancoExc.Classes;
+using ContaBancoExc.ExceptionsPerso;
+
+namespace ContaBancoExc
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			Console.WriteLine("Numero da Conta:");
+			int NunConta = int.Parse(Console.ReadLine());
+
+			Console.WriteLine("Titular:");
+			string Titular = Console.ReadLine();
+
+			Console.WriteLine("Saldo Inicial:");
+			double SaldoInicial = double.Parse(Console.ReadLine());
+
+			Console.WriteLine("Limite Saque:");
+			double LimiteSaque = double.Parse(Console.ReadLine());
+
+			Conta c1 = new Conta(NunConta, Titular, SaldoInicial, LimiteSaque);
+
+			Console.WriteLine("Digite um valor para Saque:");
+			double ValorSaque = double.Parse(Console.ReadLine());
+
+			try        //método try captura e exibe atravez da excessão personalizada o erro
+			{
+				c1.Saque(ValorSaque);
+
+				Console.WriteLine("Saldo Atualizado:" + c1.SaldoInicial);
+
+			}
+             catch(ExcessaoDominio e)
+			{
+				Console.WriteLine("Erro: " + e.Message);
+			}
+
+
+
+		}
+	}
+}
+
+
+
+

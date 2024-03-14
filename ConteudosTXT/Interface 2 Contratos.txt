@@ -1,0 +1,263 @@
+EXERCÍCIOS 2
+
+Uma empresa deseja automatizar o processamento de seus contratos. O processamento de
+um contrato consiste em gerar as parcelas a serem pagas para aquele contrato, com base no
+número de meses desejado.
+A empresa utiliza um serviço de pagamento online para realizar o pagamento das parcelas.
+Os serviços de pagamento online tipicamente cobram um juro mensal, bem como uma taxa
+por pagamento. Por enquanto, o serviço contratado pela empresa é o do Paypal, que aplica
+juros simples de 1% a cada parcela, mais uma taxa de pagamento de 2%.
+
+Fazer um programa para ler os dados de um contrato (número do contrato, data do contrato,
+e valor total do contrato). Em seguida, o programa deve ler o número de meses para
+parcelamento do contrato, e daí gerar os registros de parcelas a serem pagas (data e valor),
+sendo a primeira parcela a ser paga um mês após a data do contrato, a segunda parcela dois
+meses após o contrato e assim por diante. Mostrar os dados das parcelas na tela.
+Veja exemplo na próxima página.
+
+EXEMPLO:
+Insira os dados do contrato
+Número: 8028
+Data (dd/MM/aaaa): 25/06/2018
+Valor do contrato: 600,00
+Insira o número de parcelas: 3
+Parcelas:
+25/07/2018 - 206.04
+25/08/2018 - 208.08
+25/09/2018 - 210.12
+
+CALCULO:
+Cálculos (1% de juros simples mensais + 2% de taxa de pagamento):
+Cota nº 1:
+200 + 1% * 1 = 202
+202 + 2% = 206,04
+
+Cota nº 2:
+200 + 1% * 2 = 204
+204 + 2% = 208,08
+
+Cota nº 3:
+200 + 1% * 3 = 206
+206 + 2% = 210,12
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+CONTRATO
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Sistema_Contratos.Entidades {
+
+    class Contrato {
+        public int NumContrato { get; set; }
+        public DateTime DataContrato { get; set; }
+        public double ValorTotal { get; set; }
+        public List<Prestacao> _prestacao { get; set; }
+
+        public Contrato(int numContrato, DateTime dataContrato, double valorTotal) {
+            NumContrato = numContrato;
+            DataContrato = dataContrato;
+            ValorTotal = valorTotal;
+            _prestacao = new List<Prestacao>();
+        }
+
+        public void AdicionarPrestacao(Prestacao prestacaoRecebe) {
+            _prestacao.Add(prestacaoRecebe); 
+        }
+    }
+}
+-------------------------------------------------------------------------
+PRESTAÇÃO 
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
+namespace Sistema_Contratos.Entidades {
+
+    class Prestacao {
+        public DateTime DataVencimento { get; set; }
+        public double   Valor { get; set; }
+
+        public Prestacao(DateTime dataVencimento, double valor) {
+            DataVencimento = dataVencimento;
+            Valor = valor;
+        }
+
+        public override string ToString() {
+            return DataVencimento.ToString("dd/MM/yyy")
+                + "-"
+                + Valor.ToString("F2", CultureInfo.InvariantCulture);
+        }
+    }
+}
+-----------------------------------------------------------------------
+SERVIÇO DE CONTRATO
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Sistema_Contratos.Entidades;
+
+namespace Sistema_Contratos.Servicos {
+
+    class ServicoContrato {
+        private IServicoPgmOnline _servicoPgmOnline;
+
+        public ServicoContrato(IServicoPgmOnline servicoPgmOnline) {
+            _servicoPgmOnline = servicoPgmOnline;
+        }
+
+        
+        public void ProcessaContrato(Contrato contrato, int messes) {
+            double CotaBasica = contrato.ValorTotal / messes;
+
+            for (int i = 1; i <=messes; i++) {
+                DateTime data = contrato.DataContrato.AddMonths(i);
+
+                double AtualizarCotaBasica = CotaBasica + _servicoPgmOnline.Interesse(CotaBasica, i);
+
+                double CotaCheia = AtualizarCotaBasica + _servicoPgmOnline.TaxaPagamento(AtualizarCotaBasica);
+
+                contrato.AdicionarPrestacao(new Prestacao(data, CotaCheia));
+
+
+
+            }
+        }
+
+    }
+}
+------------------------------------------------------------------
+SERVIÇO DE PAGAMENTO
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Sistema_Contratos.Servicos {
+
+    class SrvicoPagamento : IServicoPgmOnline {
+
+           private const double PorcentagemTaxa = 0.02;
+           private const double JurosMensais = 0.01;
+
+        public double Interesse(double valor, int messes) {
+            return valor * JurosMensais * messes;
+
+        }
+
+        public double TaxaPagamento(double valor) {
+            return valor * PorcentagemTaxa; 
+        }
+    }
+}
+---------------------------------------------------------------------
+INTERFACE:
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Sistema_Contratos.Servicos {
+
+    interface IServicoPgmOnline {
+        double TaxaPagamento(double valor);
+
+
+
+        double Interesse(double valor, int messes);
+
+        
+    }
+-----------------------------------------------------------------
+PROGRAMA PRINCIPAL:
+
+sing System;
+using System.Globalization;
+using Sistema_Contratos.Entidades;
+using Sistema_Contratos.Servicos;
+
+namespace Sistema_Contratos {
+    class Program {
+        static void Main(string[] args) {
+            Console.WriteLine("Digite os dados do contrato: ");
+
+            Console.Write("Numero: ");
+            int NumContrato = int.Parse(Console.ReadLine());
+
+            Console.Write("Data: (dd/MM/yyyy)" );
+            DateTime DataContrato = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            Console.Write("Valor do contrato: ");
+            double ValorContrato = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+            Console.WriteLine("Quantidade de prestações: ");
+            int messes = int.Parse(Console.ReadLine());
+
+            Contrato MeuContrato = new Contrato(NumContrato, DataContrato, ValorContrato);
+
+            ServicoContrato servicoContrato = new ServicoContrato(new SrvicoPagamento());
+            servicoContrato.ProcessaContrato(MeuContrato, messes);
+
+            Console.WriteLine("Prestações: ");
+            foreach (Prestacao itemPrest in MeuContrato._prestacao) {
+                Console.WriteLine(itemPrest);
+
+            }
+        }
+    }
+}
+---------------------------------------------------------------
+EXPLICAÇÃO
+
+Este código C# é um exemplo de um sistema de contratos que calcula prestações de um contrato 
+com base em algumas regras de pagamento, taxa de juros e taxas de pagamento. Vou explicar o 
+código em partes:
+
+Entidades: Contrato e Prestação
+
+Contrato é uma classe que representa um contrato. Possui propriedades como NumContrato, DataContrato,
+ ValorTotal e uma lista de Prestacao chamada _prestacao.
+
+Prestacao é uma classe que representa uma prestação dentro de um contrato. Ela possui propriedades como
+ DataVencimento e Valor. Além disso, tem um método ToString() personalizado para formatar a saída das prestações.
+
+Serviço de Contrato: ServicoContrato
+
+ServicoContrato é uma classe que realiza o processamento de um contrato. Ela recebe um objeto que implementa
+ a interface IServicoPgmOnline no construtor.
+
+O método ProcessaContrato calcula as prestações do contrato com base no número de meses especificado. 
+Ele itera através dos meses, calcula o valor da prestação com juros e taxas usando os métodos definidos
+ na interface IServicoPgmOnline e, em seguida, adiciona as prestações ao contrato.
+
+Serviço de Pagamento: SrvicoPagamento
+
+SrvicoPagamento é uma classe que implementa a interface IServicoPgmOnline. Ela fornece métodos para calcular
+ juros mensais e taxas de pagamento com base no valor da prestação.
+Interface: IServicoPgmOnline
+
+IServicoPgmOnline é uma interface que define dois métodos: TaxaPagamento e Interesse. Esses métodos devem ser
+ implementados pelas classes que desejam fornecer serviços de pagamento para contratos.
+Programa Principal
+
+O programa principal no método Main é onde o usuário interage com o sistema.
+
+Ele solicita ao usuário que insira informações sobre o contrato, como número, data, valor total do contrato 
+e a quantidade de prestações.
+
+Em seguida, cria um objeto Contrato com base nas informações fornecidas pelo usuário.
+
+Em seguida, cria um objeto ServicoContrato com um serviço de pagamento SrvicoPagamento.
+
+Chama o método ProcessaContrato para calcular as prestações com base nas informações do contrato e na quantidade de meses.
+
+Por fim, exibe as prestações calculadas na saída.
+
+O objetivo desse código é demonstrar um sistema de contratos simples, onde você pode inserir informações sobre um contrato 
+e calcular as prestações mensais com base em algumas regras de pagamento, taxa de juros e taxas de pagamento. O sistema usa 
+classes e interfaces para organizar o código de maneira modular e extensível.

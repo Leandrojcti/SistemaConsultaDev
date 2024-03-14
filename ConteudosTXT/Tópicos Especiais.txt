@@ -1,0 +1,363 @@
+  switch-case
+
+  Estrutura opcional a vários if-else encadeados, quando a condição envolve o teste
+  do valor de uma variável.
+
+  Sintaxe:
+  var minhaVariavel = (...);
+
+  switch (minhaVariavel) {
+      case 1:
+          Console.WriteLine("Caso 1");
+          break;
+      case 2:
+          Console.WriteLine("Caso 2");
+          break;
+      default:
+          Console.WriteLine("Caso padrão");
+          break;
+  }
+
+//////////////////////////////////////////////////////////////////////////////////////
+ Expressão condicional ternária
+Estrutura opcional ao if-else quando se deseja decidir um VALOR com base em uma
+condição.
+
+Sintaxe:
+( condição ) ? valor_se_verdadeiro : valor_se_falso
+
+
+
+Exemplos:
+( 2 > 4 ) ? 50 : 80                     80
+
+( 10 != 3 ) ? "Maria" : "Alex"                   "Maria"
+
+Demo
+double preco = 34.5;
+double desconto;
+if (preco < 20.0) {
+    desconto = preco * 0.1;
+}
+else {
+    desconto = preco * 0.05;
+}
+
+
+
+
+double preco = 34.5;
+double desconto = (preco < 20.0) ? preco * 0.1 : preco * 0.05;
+
+////////////////////////////////////////////////////////////////////////////
+Funções interessantes para string
+
+string s1 = original.ToUpper();
+
+Essa linha converte todos os caracteres da string "original" 
+para letras maiúsculas e armazena o resultado na variável "s1".
+---------------------------------------------------------------------------
+string s2 = original.ToLower();
+
+Essa linha converte todos os caracteres da string "original" 
+para letras minúsculas e armazena o resultado na variável "s2".
+----------------------------------------------------------------------------
+string s3 = original.Trim();
+
+Essa linha remove os espaços em branco no início e no final da string
+ "original" e armazena o resultado na variável "s3". Isso é útil para 
+remover possíveis espaços extras que podem causar problemas ao processar a string.
+----------------------------------------------------------------------------------
+int n1 = original.IndexOf("bc");
+
+Essa linha retorna o índice da primeira ocorrência da sequência de caracteres 
+"bc" dentro da string "original" e armazena o resultado na variável "n1". Se a 
+sequência não for encontrada, o valor de "n1" será -1.
+---------------------------------------------------------------------------------
+int n2 = original.LastIndexOf("bc");
+
+Essa linha retorna o índice da última ocorrência da sequência de caracteres 
+"bc" dentro da string "original" e armazena o resultado na variável "n2". Se 
+a sequência não for encontrada, o valor de "n2" será -1.
+---------------------------------------------------------------------------------
+string s4 = original.Substring(3);
+
+Essa linha extrai uma substring da string "original", começando no índice 3 até 
+o final da string, e armazena o resultado na variável "s4".
+---------------------------------------------------------------------------------
+string s5 = original.Substring(3, 5);
+
+Essa linha extrai uma substring da string "original", começando no índice 3 e 
+com comprimento 5 caracteres, e armazena o resultado na variável "s5".
+----------------------------------------------------------------------------------
+string s6 = original.Replace('a', 'x');
+
+Essa linha substitui todas as ocorrências do caractere 'a' na string "original" 
+pelo caractere 'x' e armazena o resultado na variável "s6".
+----------------------------------------------------------------------------------
+string s7 = original.Replace("abc", "xy");
+
+Essa linha substitui todas as ocorrências da sequência de caracteres "abc" na 
+string "original" pela sequência de caracteres "xy" e armazena o resultado na variável "s7".
+---------------------------------------------------------------------------------------------
+bool b1 = String.IsNullOrEmpty(original);
+
+Essa linha verifica se a string "original" é nula ou vazia e armazena o resultado na 
+variável booleana "b1". Retorna true se a string for nula ou vazia, caso contrário, retorna false.
+-------------------------------------------------------------------------------------------------
+bool b2 = String.IsNullOrWhiteSpace(original);
+
+Essa linha verifica se a string "original" é nula, vazia ou contém apenas espaços em branco 
+e armazena o resultado na variável booleana "b2". Retorna true se a string for nula, vazia ou
+ conter apenas espaços em branco, caso contrário, retorna false.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+DateTime
+• Representa um INSTANTE
+• É um tipo valor (struct)
+
+https://msdn.microsoft.com/en-us/library/system.datetime(v=vs.110).aspx
+
+
+• Agenda:
+   • Representação interna
+   • Instanciação: construtores, builders / conversão String -> DateTime
+   • Formatação: DateTime -> String
+Representação interna
+• Um objeto DateTime internamente armazena:
+   • O número de "ticks" (100 nanosegundos) desde a meia noite do dia 1 de
+     janeiro do ano 1 da era comum
+
+
+DateTime d1 = DateTime.Now;
+Console.WriteLine(d1);
+Console.WriteLine(d1.Ticks);
+
+
+
+
+Instanciação
+• Construtores
+   • DateTime(ano, mes, dia)
+   • DateTime(ano, mes, dia, hora, minuto, segundo) [opcional: kind]
+   • DateTime(ano, mes, dia, hora, minuto, segundo, milissegundo) [opcional: kind]
+
+
+• Builders
+   •   DateTime.Now
+   •   DateTime.UtcNow
+   •   DateTime.Today [time: 00:00:00]
+   •   DateTime.Parse(string)
+   •   DateTime.ParseExact(string, string)
+Demo - construtores
+DateTime d1 = new DateTime(2000, 8, 15);
+DateTime d2 = new DateTime(2000, 8, 15, 13, 5, 58);
+DateTime d3 = new DateTime(2000, 8, 15, 13, 5, 58, 275);
+
+Console.WriteLine(d1);
+Console.WriteLine(d2);
+Console.WriteLine(d3);
+
+
+
+
+Demo - Now, UtcNow, Today
+
+DateTime d1 = DateTime.Now;
+DateTime d2 = DateTime.UtcNow;
+DateTime d3 = DateTime.Today;
+Console.WriteLine(d1);
+Console.WriteLine(d2);
+Console.WriteLine(d3);
+Demo - Parse
+DateTime   d1   =   DateTime.Parse("2000-08-15");
+DateTime   d2   =   DateTime.Parse("2000-08-15 13:05:58");
+DateTime   d3   =   DateTime.Parse("15/08/2000");
+DateTime   d4   =   DateTime.Parse("15/08/2000 13:05:58");
+
+Console.WriteLine(d1);
+Console.WriteLine(d2);
+Console.WriteLine(d3);
+Console.WriteLine(d4);
+
+//////////////////////////////////////////////////////////////////////////////
+TimeSpan
+• Representa uma DURAÇÃO
+• É um tipo valor (struct)
+
+Agenda:
+  • Representação interna
+  • Instanciação: construtores, fields, métodos From, Parse
+Representação interna
+• Um objeto TimeSpan internamente armazena uma duração na forma
+  de ticks (100 nanosegundos)
+
+
+TimeSpan t1 = new TimeSpan(0, 1, 30);
+Console.WriteLine(t1);
+Console.WriteLine(t1.Ticks);
+
+
+
+
+Construtores
+• TimeSpan()
+• TimeSpan(ticks)
+• TimeSpan(horas, minutos, segundos)
+• TimeSpan(dias, horas, minutos, segundos)
+• TimeSpan(dias, horas, minutos, segundos, milissegundos)
+Demo - construtores
+
+TimeSpan   t1   =   new   TimeSpan();
+TimeSpan   t2   =   new   TimeSpan(900000000L);
+TimeSpan   t3   =   new   TimeSpan(2, 11, 21);
+TimeSpan   t4   =   new   TimeSpan(1, 2, 11, 21);
+TimeSpan   t5   =   new   TimeSpan(1, 2, 11, 21, 321);
+
+Console.WriteLine(t1);
+Console.WriteLine(t2);
+Console.WriteLine(t3);
+Console.WriteLine(t4);
+Console.WriteLine(t5);
+
+
+
+
+Demo - métodos From
+TimeSpan   t1   =   TimeSpan.FromDays(1.5);
+TimeSpan   t2   =   TimeSpan.FromHours(1.5);
+TimeSpan   t3   =   TimeSpan.FromMinutes(1.5);
+TimeSpan   t4   =   TimeSpan.FromSeconds(1.5);
+TimeSpan   t5   =   TimeSpan.FromMilliseconds(1.5);
+TimeSpan   t6   =   TimeSpan.FromTicks(900000000L);
+
+Console.WriteLine(t1);
+Console.WriteLine(t2);
+Console.WriteLine(t3);
+Console.WriteLine(t4);
+Console.WriteLine(t5);
+Console.WriteLine(t6);
+Propriedades e Operações com
+DateTime
+
+Propriedades
+•   Date (DateTime)
+•   Day (int)
+•   DayOfWeek (DayOfWeek)
+•   DayOfYear (int)
+•   Hour (int)
+•   Kind (DateTimeKind)
+•   Millisecond (int)
+•   Minute (int)
+•   Month (int)
+•   Second (int)
+•   Ticks (long)
+•   TimeOfDay (TimeSpan)
+•   Year (int)
+Demo
+DateTime d = new DateTime(2001, 8, 15, 13, 45, 58, 275);
+Console.WriteLine(d);
+Console.WriteLine("1) Date: " + d.Date);
+Console.WriteLine("2) Day: " + d.Day);
+Console.WriteLine("3) DayOfWeek: " + d.DayOfWeek);
+Console.WriteLine("4) DayOfYear: " + d.DayOfYear);
+Console.WriteLine("5) Hour: " + d.Hour);
+Console.WriteLine("6) Kind: " + d.Kind);
+Console.WriteLine("7) Millisecond: " + d.Millisecond);
+Console.WriteLine("8) Minute: " + d.Minute);
+Console.WriteLine("9) Month: " + d.Month);
+Console.WriteLine("10) Second: " + d.Second);
+Console.WriteLine("11) Ticks: " + d.Ticks);
+Console.WriteLine("12) TimeOfDay: " + d.TimeOfDay);
+Console.WriteLine("13) Year: " + d.Year);
+
+
+
+
+Formatação (DateTime -> string)
+DateTime d = new DateTime(2001, 8, 15, 13, 45, 58);
+
+string   s1   =   d.ToLongDateString();
+string   s2   =   d.ToLongTimeString();
+string   s3   =   d.ToShortDateString();
+string   s4   =   d.ToShortTimeString();
+string   s5   =   d.ToString();
+string   s6   =   d.ToString("yyyy-MM-dd HH:mm:ss");
+string   s7   =   d.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+Console.WriteLine(s1);
+Console.WriteLine(s2);
+Console.WriteLine(s3);
+Console.WriteLine(s4);
+Console.WriteLine(s5);
+Console.WriteLine(s6);
+Console.WriteLine(s7);
+Operações com Datetime
+DateTime x = ...
+
+DateTime   y   =   x.Add(timeSpan);
+DateTime   y   =   x.AddDays(double);
+DateTime   y   =   x.AddHours(double);
+DateTime   y   =   x.AddMilliseconds(double);
+DateTime   y   =   x.AddMinutes(double);
+DateTime   y   =   x.AddMonths(int);
+DateTime   y   =   x.AddSeconds(double);
+DateTime   y   =   x.AddTicks(long);
+DateTime   y   =   x.AddYears(int);
+
+DateTime y = x.Subtract(timeSpan);
+TimeSpan t = x.Subtract(dateTime);
+
+///////////////////////////////////////////////////////////////////////////////
+Propriedades e Operações com
+TimeSpan
+
+Demo: MaxValue, MinValue, Zero
+
+TimeSpan t1 = TimeSpan.MaxValue;
+TimeSpan t2 = TimeSpan.MinValue;
+TimeSpan t3 = TimeSpan.Zero;
+Console.WriteLine(t1);
+Console.WriteLine(t2);
+Console.WriteLine(t3);
+
+
+
+
+Demo - propriedades
+TimeSpan t = new TimeSpan(2, 3, 5, 7, 11);
+
+Console.WriteLine(t);
+
+Console.WriteLine("Days: " + t.Days);
+Console.WriteLine("Hours: " + t.Hours);
+Console.WriteLine("Minutes: " + t.Minutes);
+Console.WriteLine("Milliseconds: " + t.Milliseconds);
+Console.WriteLine("Seconds: " + t.Seconds);
+Console.WriteLine("Ticks: " + t.Ticks);
+
+Console.WriteLine("TotalDays: " + t.TotalDays);
+Console.WriteLine("TotalHours: " + t.TotalHours);
+Console.WriteLine("TotalMinutes: " + t.TotalMinutes);
+Console.WriteLine("TotalSeconds: " + t.TotalSeconds);
+Console.WriteLine("TotalMilliseconds: " + t.TotalMilliseconds);
+Demo - operações
+TimeSpan t1 = new TimeSpan(1, 30, 10);
+TimeSpan t2 = new TimeSpan(0, 10, 5);
+
+TimeSpan   sum = t1.Add(t2);
+TimeSpan   dif = t1.Subtract(t2);
+TimeSpan   mult = t2.Multiply(2.0);
+TimeSpan   div = t2.Divide(2.0);
+
+Console.WriteLine(t1);
+Console.WriteLine(t2);
+Console.WriteLine(sum);
+Console.WriteLine(dif);
+Console.WriteLine(mult);
+Console.WriteLine(div);
+
+
+
+
+

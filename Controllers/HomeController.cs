@@ -1,6 +1,14 @@
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SistemaConsultaDev.Models;
 using System.Diagnostics;
+using System.IO;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using iText.Html2pdf;
+using iText.Kernel.Pdf;
+
 
 namespace SistemaConsultaDev.Controllers
 {
@@ -18,10 +26,21 @@ namespace SistemaConsultaDev.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        //Metodo Leitura txt (Usa a biblioteca iTextSharp Adicionada pelo Nuget)
+
+        public IActionResult LeituraGeral(String NomeArquivo)
         {
-            return View();
+            string Caminho = Path.Combine("C:/Estudos Programação/SistemaConsultaDev/SistemaConsultaDev/ConteudosTXT/" + NomeArquivo + ".txt");
+            String[] Conteudo = System.IO.File.ReadAllLines(Caminho);
+
+            ViewData["NomeArquivo"] = NomeArquivo;
+
+            return View((object)Conteudo);
+
         }
+
+      
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,0 +1,425 @@
+File, FileInfo
+• Namespace System.IO
+
+• Realiza operações com arquivos (create, copy, delete, move, open, etc.) e
+  ajuda na criação de objetos FileStream.
+
+• File
+   • static members (simples, mas realiza verificação de segurança para cada operação)
+   • https://msdn.microsoft.com/en-us/library/system.io.file(v=vs.110).aspx
+
+• FileInfo
+   • instance members
+   • https://msdn.microsoft.com/en-us/library/system.io.fileinfo(v=vs.110).aspx
+
+
+
+
+IOException
+Namespace System.IO
+
+• IOException
+   •   DirectoryNotFoundException
+   •   DriveNotFoundException
+   •   EndOfStreamException
+   •   FileLoadException
+   •   FileNotFoundException
+   •   PathTooLongException
+   •   PipeException
+---------------------------------------
+EXEMPLOS
+
+Demo File
+
+using System;
+using System.IO;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            string sourcePath = @"c:\temp\file1.txt";  //variáveis que armazenam o caminho dos arquivos
+            string targetPath = @"c:\temp\file2.txt";
+
+            try {
+                File.Copy(sourcePath, targetPath);   //File não e nesessario instanciar
+                string[] lines = File.ReadAllLines(sourcePath);   //faz a leitura do arquivo
+                foreach (string line in lines) {
+                    Console.WriteLine(line);              
+                }
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+
+----------------------------------------------------------------------
+
+
+Demo FileInfo
+
+using System;
+using System.IO;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            string sourcePath = @"c:\temp\file1.txt";
+            string targetPath = @"c:\temp\file2.txt";
+
+            try {
+                FileInfo fileInfo = new FileInfo(sourcePath);  //FileInfo e nesessario instanciar
+                fileInfo.CopyTo(targetPath);                   //Chama a operaração desejada, nesse caso CopyTo, faz uma cópia do arquivo no dirétorio
+                string[] lines = File.ReadAllLines(sourcePath);
+                foreach (string line in lines) {
+                    Console.WriteLine(line);
+                }
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+
+---------------------------------------------------------------------
+StreamReader
+https://msdn.microsoft.com/en-us/library/system.io.streamreader(v=vs.90).aspx
+
+É uma stream capaz de ler caracteres a partir de uma stream binária (ex:
+FileStream).
+
+Suporte a dados no formato de texto.
+
+
+Instanciação:
+     • Vários construtores                            read chars           StreamReader   FileStream
+     • File / FileInfo
+
+
+
+Exemplo não resumido
+(Este exemplo le apenas uma linha do arquivo)
+
+ using System;
+ using System.IO;
+
+ namespace Course {
+     class Program {
+         static void Main(string[] args) {
+
+             string path = @"c:\temp\file1.txt";
+             FileStream fs = null;
+             StreamReader sr = null;
+             try {
+                 fs = new FileStream(path, FileMode.Open); // File.OpenRead(path);  //abrir o arquivo para acesso
+                 sr = new StreamReader(fs);
+                 string line = sr.ReadLine();
+                 Console.WriteLine(line);
+             }
+             catch (IOException e) {
+                 Console.WriteLine("An error occurred");
+                 Console.WriteLine(e.Message);
+             }
+             finally {
+                 if (sr != null) sr.Close(); //se dar excessão usa o bloco Finally para fechar os arquivos
+                 if (fs != null) fs.Close();
+             }
+         }
+     }
+ }
+
+-----------------------------------------------------------
+Exemplo não resumido
+(Este exemplo le todas as linhas do arquivo atravez do while)
+
+using System;
+using System.IO;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            string path = @"c:\temp\file1.txt";
+
+            StreamReader sr = null;
+            try {
+                sr = File.OpenText(path);  //usa  classe File, ja instancia automaticamente o FileStream e o StreamReader 
+                while (!sr.EndOfStream) {     // enquanto não (!) chegar no final do arquivo (sr.EndOfStream) leia todas as linhas
+                    string line = sr.ReadLine();
+                    Console.WriteLine(line);
+                }
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+            finally {
+                if (sr != null) sr.Close();
+            }
+        }
+    }
+}
+-----------------------------------------------
+Using block
+
+class Program {
+        static void Main(string[] args) {
+
+            string path = @"c:\temp\file1.txt";
+
+            try {
+                using (StreamReader sr = File.OpenText(path)) {
+                    while (!sr.EndOfStream) {
+                        string line = sr.ReadLine();           //bloco using para fechamento automático (apção resumida ao Finality do try cat) 
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+
+------------------------------------------------
+StreamWriter (escrita)
+
+É uma stream capaz de escrever caracteres a partir de uma stream binária (ex:
+FileStream).
+
+Suporte a dados no formato de texto.
+
+Instantiation:
+    • Several constructors
+    • File / FileInfo                                    write chars       StreamWriter   FileStream
+            • CreateText(path)
+            • AppendText(String)
+
+
+Exemplo
+
+class Program {
+        static void Main(string[] args) {
+
+             string sourcePath = @"c:\temp\file1.txt";
+             string targetPath = @"c:\temp\file2.txt";
+
+             try {
+                 string[] lines = File.ReadAllLines(sourcePath); //Le o arquivo
+
+                 using (StreamWriter sw = File.AppendText(targetPath)) {   //AppendText abre o arquivo para escrita
+                     foreach (string line in lines) {
+                         sw.WriteLine(line.ToUpper()); //ToUpper converte para maiuscula
+                     }
+                 }
+             }
+             catch (IOException e) {
+                 Console.WriteLine("An error occurred");
+                 Console.WriteLine(e.Message);
+             }
+        }
+    }
+
+-------------------------------------------------
+Directory, DirectoryInfo
+
+• Namespace System.IO
+
+• Operações com pastas (create, enumerate, get files, etc.).
+
+• Directory
+   • static members (simple, but performs security check for each operation)
+   • https://msdn.microsoft.com/en-us/library/system.io.directory(v=vs.110).aspx
+
+• DirectoryInfo
+   • instance members
+
+ 
+        • Vamos listar as pastas a partir de uma pasta informada
+
+        • Vamos listar os arquivos a partir de uma pasta informada
+
+        • Vamos criar uma pasta
+
+using System;
+using System.IO;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+            string path = @"c:\temp\myfolder";
+
+            try {
+                var folders = Directory.EnumerateDirectories(path, "*.*", SearchOption.AllDirectories);
+                Console.WriteLine("FOLDERS:");
+                foreach (string s in folders) {
+                    Console.WriteLine(s);
+                }
+
+                   var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
+                   Console.WriteLine("FILES:");
+                   foreach (string s in files) {
+                       Console.WriteLine(s);
+                   }
+
+                Directory.CreateDirectory(@"c:\temp\myfolder\newfolder");
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+---------------------------------------------------------------------------------
+Exercícios de Fixação
+
+Fazer um programa para ler o caminho de um arquivo .csv
+contendo os dados de itens vendidos. Cada item possui um
+nome, preço unitário e quantidade, separados por vírgula. Você
+deve gerar um novo arquivo chamado "summary.csv", localizado
+em uma subpasta chamada "out" a partir da pasta original do
+arquivo de origem, contendo apenas o nome e o valor total para
+aquele item (preço unitário multiplicado pela quantidade),
+conforme exemplo.
+
+
+
+
+Example:
+
+Source file:                            Output file (out/summary.csv):
+
+TV LED,1290.99,1                        TV LED,1290.99
+Video Game Chair,350.50,3               Video Game Chair,1051.50
+Iphone X,900.00,2                       Iphone X,1800.00
+Samsung Galaxy 9,850.00,2               Samsung Galaxy 9,1700.00
+
+---------------------------
+Código:
+
+Classe Produto
+
+﻿namespace Course.Entities {
+    class Produto {
+
+        public string Nome { get; set; }
+        public double Preco { get; set; }
+        public int Quantidade { get; set; }
+
+        public Produto(string nome, double preco, int quantidade) {
+            Name = nome;
+            Price = preco;
+            Quantity = quantidade;
+        }
+
+        public double Total() {
+            return Preco * Quantidade;
+        }
+    }
+}
+
+-------------------------
+Program:
+
+using Course.Entities;
+using System;
+using System.Globalization;
+using System.IO;
+
+namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            Console.Write("Insira o caminho completo do arquivo: ");
+            string CaminhoArquivo = Console.ReadLine();
+
+            try {
+                string[] lines = File.ReadAllLines(CaminhoArquivo);
+
+                string PastaOrigem = Path.GetDirectoryName(CaminhoArquivo);
+                string PastaDestino = PastaOrigem + @"\out";
+                string ArquivoDestino = PastaDestino + @"\summary.csv";
+
+                Directory.CreateDirectory(PastaDestino);
+
+                using (StreamWriter sw = File.AppendText(ArquivoDestino)) {
+                    foreach (string line in lines) {
+
+                        string[] fields = line.Split(',');
+                        string name = fields[0];
+                        double price = double.Parse(fields[1], CultureInfo.InvariantCulture);
+                        int quantidade = int.Parse(fields[2]);
+
+                        Produto prod = new Produto(nome, preco, quantidade);
+
+                        sw.WriteLine(prod.Nome + "," + prod.Total().ToString("F2", CultureInfo.InvariantCulture));
+                    }
+                }
+            }
+            catch (IOException e) {
+                Console.WriteLine("An error occurred");
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+
+--------------------------------
+Explicação
+
+Este código é um programa C# que lê um arquivo de texto contendo informações sobre produtos 
+(nome, preço e quantidade) e, em seguida, gera um novo arquivo "summary.csv" com o nome do 
+produto e o valor total do estoque (preço multiplicado pela quantidade).
+
+Vamos explicar o código passo a passo:
+
+1 - Definição da classe Produto:
+O código começa com a declaração de um namespace "Course.Entities" e a definição de uma classe  
+chamada "Produto" (produto em português). Essa classe representa um produto com três propriedades:
+ Nome, Preco (preço) e Quantidade. Também possui um construtor que recebe os valores do produto e 
+inicializa as propriedades.
+
+2 - Programa principal (namespace "Course"):
+O programa principal começa com os imports dos namespaces necessários (Course.Entities, System, 
+System.Globalization e System.IO).
+
+3 - Leitura do caminho do arquivo:
+O programa solicita ao usuário que insira o caminho completo do arquivo a ser lido.
+
+4 - Leitura do arquivo e criação de um novo diretório:
+O código tenta ler todas as linhas do arquivo especificado pelo usuário e armazena os dados em  
+um array de strings chamado "lines". Em seguida, ele obtém a pasta de origem do arquivo usando
+ "Path.GetDirectoryName" e cria uma nova pasta chamada "out" dentro da pasta de origem. O caminho
+ completo para o novo arquivo "summary.csv" é criado com base na pasta de destino e no nome do arquivo.
+
+5 - Processamento do arquivo:
+O programa inicia um loop "foreach" para iterar sobre cada linha lida do arquivo. Dentro do loop, 
+ele faz o seguinte:
+
+a) Separa os campos da linha em um array de strings chamado "fields", usando a vírgula (',') como separador.
+b) Extrai o nome, preço e quantidade do array "fields".
+c) Converte o preço para um valor double usando "double.Parse" com "CultureInfo.InvariantCulture" para tratar o ponto decimal.
+d) Converte a quantidade para um valor inteiro usando "int.Parse".
+e) Cria um novo objeto "Produto" com as informações extraídas da linha.
+f) Calcula o valor total do estoque do produto chamando o método "Total" da classe "Produto".
+g) Escreve uma nova linha no arquivo "summary.csv" com o nome do produto e o valor total do estoque, formatado com duas 
+casas decimais, utilizando "ToString" com "CultureInfo.InvariantCulture".
+
+6 - Tratamento de exceções:
+O código envolve toda a operação de leitura do arquivo em um bloco "try-catch". Se ocorrer algum erro durante a leitura do 
+arquivo (por exemplo, arquivo não encontrado), o programa capturará a exceção e imprimirá a mensagem de erro no console.
+
+Em resumo, este código lê um arquivo de texto com informações de produtos, calcula o valor total do estoque para cada 
+produto e gera um novo arquivo CSV contendo essas informações.
+
+
+
+

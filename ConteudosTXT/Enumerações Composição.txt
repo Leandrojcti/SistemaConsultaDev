@@ -1,0 +1,528 @@
+Enumerações
+
+• É um tipo especial que serve para especificar de forma literal um conjunto
+  de constantes relacionadas
+
+• Palavra chave em C#: enum
+    • Nota: enum é um tipo valor
+
+
+• Vantagem: melhor semântica, código mais legível e auxiliado pelo
+  compilador
+
+• Referência: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/enum
+    Exemplo
+
+    Ciclo de vida de
+    um pedido.
+
+
+
+
+enum OrderStatus : int {       class Order {
+
+     PendingPayment = 0,           public int Id { get; set; }
+     Processing = 1,               public DateTime Moment { get; set; }
+     Shipped = 2,                  public OrderStatus Status { get; set; }
+     Delivered = 3
+}                              }
+  
+///////////////////////////////////////////////////////////////////////////////////////////
+Composição 
+
+• É um tipo de associação que permite que um objeto contenha outro
+
+• Relação "tem-um" ou "tem-vários"
+
+• Vantagens
+   •   Organização: divisão de responsabilidades
+   •   Coesão
+   •   Flexibilidade
+   •   Reuso
+
+• Nota: embora o símbolo UML para composição (todo-parte) seja o diamante
+  preto, neste contexto estamos chamando de composição qualquer associação
+  tipo "tem-um" e "tem-muitos". 
+
+//////////////////////////////////////////////////////////////////////////////////// 
+Exemplos (exercícios)
+
+Ler os dados de um trabalhador com N contratos (N fornecido pelo usuário). Depois, solicitar 
+do usuário um mês e mostrar qual foi o salário do funcionário nesse mês, conforme exemplo 
+
+  Saída:
+Insira o nome do departamento: Design
+Insira os dados do trabalhador:
+Nome: Alex
+Nível (Junior/MidLevel/Sênior): MidLevel
+Salário base: 1200,00
+Quantos contratos para este trabalhador? 3
+Insira os dados do contrato nº 1:
+Data (DD/MM/AAAA): 20/08/2018
+Valor por hora: 50,00
+Duração (horas): 20
+Insira os dados do contrato nº 2:
+Data (DD/MM/AAAA): 13/06/2018
+Valor por hora: 30,00
+Duração (horas): 18
+Insira os dados do contrato nº 3:
+Data (DD/MM/AAAA): 25/08/2018
+Valor por hora: 80,00
+Duração (horas): 10
+Digite o mês e o ano para calcular o rendimento (MM/AAAA): 08/2018
+Nome: Alex
+Departamento: Desenho
+Renda de 08/2018: 3.000,00  
+
+                                                                   
+CLASSES:
+-------------------------------------------------------------
+Nivel (Enum)
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composition.classes_entities.Enuns {
+    enum Nivel_trabalhador : int {
+            Junior = 0,
+            Mid = 1,
+            Senior = 2,
+
+
+
+    }
+}
+
+------------------------------------------------------------------------
+Classe Trabalhador
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Ex_composition.classes_entities.Enuns;
+
+namespace Ex_composition.classes_entities {
+    class Trabalhador {
+        public string Nome { get; set; }
+        public Nivel_trabalhador Nivel { get; set; }
+        public double Base_salario { get; set; }
+        public Departamento Departamento { get; set; }
+        public List<Horas_contrato> contratos { get; set; } =  new List<Horas_contrato>();  //
+
+        public Trabalhador() {
+
+        }
+
+        public Trabalhador(string nome, Nivel_trabalhador nivel, double base_salario, Departamento departamento) {
+            Nome = nome;
+            Nivel = nivel;
+            Base_salario = base_salario;
+            Departamento = departamento;
+        }
+        public void add_contrato(Horas_contrato contrato) {
+            contratos.Add(contrato);
+        }
+        public void remove_contrato(Horas_contrato contrato) {
+            contratos.Remove(contrato);
+        }
+        public double Ganhos(int ano, int mes) {
+            double soma = Base_salario;
+            foreach (Horas_contrato contrato in contratos) {
+                if (contrato.Date.Year == ano && contrato.Date.Year == mes) {
+                    soma += contrato.valor_horas_total();
+                }
+            }
+            return soma;
+        }
+
+
+    }
+}
+-------------------------------------------------------------------------------------
+Classe HorasContrato (Vai como objeto Lista na classe Trabalahdor "composição")
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composition.classes_entities {
+    class Horas_contrato {
+        public DateTime Date { get; set; }
+        public double Valor_hora { get; set; }
+        public int Horas { get; set; }
+
+        public Horas_contrato() {
+
+        }
+
+        public Horas_contrato(DateTime date, double valor_hora, int horas) {
+            Date = date;
+            Valor_hora = valor_hora;
+            Horas = horas;
+        }
+
+        public double valor_horas_total() {
+           return Horas * Valor_hora;
+        }
+    }
+}
+------------------------------------------------------------------------------------
+Classe Departamento
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composition.classes_entities {
+    class Departamento {
+        public string Nome { get; set; }
+
+        public Departamento() {
+
+        }
+        public Departamento(string nome) {
+            Nome = nome;
+        }
+    }
+
+
+}
+--------------------------------------------------------------------------------
+Programa Principal (Program)
+
+using Ex_composition.classes_entities.Enuns;
+using System;
+using Superpower;
+using System.Globalization;
+using Ex_composition.classes_entities;
+
+namespace Ex_composition
+{
+    class Program
+    {
+        static void Main(string[] args)
+        { 
+            //Dados do funcionario 
+            Console.Write("Nome do departamento: ");
+            string dpt_nome = Console.ReadLine();
+
+            Console.WriteLine("Digite a data: ");
+
+            Console.Write("Nome ");
+            string nome = Console.ReadLine();
+
+            Console.Write("Nivel (Junior/Mid/Senior): ");
+            Nivel_trabalhador nivel = Enum.Parse<Nivel_trabalhador>(Console.ReadLine());
+
+            Console.Write("Salario Base: ");
+            double sal_base = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+            //instanciação das classe departamento e trabalahdor passando seus atributos
+            Departamento dpt = new Departamento(dpt_nome);
+            Trabalhador trabalhador = new Trabalhador(nome, nivel, sal_base, dpt);
+
+            //dados do contrato
+            Console.Write("Quantos contratos para esse trabalhador? ");
+            int n = int.Parse(Console.ReadLine());
+            for (int i = 1; i < n; i++) {
+                //for vai ler 3 entradas de contratos
+                //#{i} serve para fazer e exibir a interpolação 
+                //$" antes das aspas duplas e nessessario para a interpolação funcionar
+                Console.WriteLine($"data do contrato #{i} : ");
+                
+                //Revebe a data no formato padrão
+                Console.WriteLine("Data(DD/MM/YYYY): ");
+                DateTime Data = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("Valor por hora: ");
+                double valar_hora = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+                Console.Write("Qtde Horas: ");
+                int Horas = int.Parse(Console.ReadLine());
+
+                //instanciação do contrato passando os parametros
+                Horas_contrato contrato = new Horas_contrato(Data, valar_hora, Horas);
+                trabalhador.add_contrato(contrato);
+            }
+               
+                Console.WriteLine();
+
+                Console.Write("Digite mes e ano para calcular os ganhos (MM/YYY): ");
+                string mes_ano = Console.ReadLine();
+
+                //SubString = recorte no valor da data recebido como string
+                int mes = int.Parse(mes_ano.Substring(0, 2));  //ex 05/2021 pega a partir do 0 ate o segundo valor 05 (mes)
+                int ano = int.Parse(mes_ano.Substring(3));     //ex 05/2021 pega a partir do 3 ate o final 2021 (ano)
+
+                Console.WriteLine("Nome: " + trabalhador.Nome);
+                Console.WriteLine("departamento: " + trabalhador.Departamento.Nome);
+
+                Console.WriteLine("Ganhos em " + mes_ano + ": " + trabalhador.Ganhos(ano,mes));
+
+
+
+            
+
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Exrcicios 2
+
+Ler os dados de um pedido com N itens (N fornecido pelo usuário). Depois, mostrar um 
+sumário do pedido conforme exemplo (próxima página). Nota: o instante do pedido deve ser 
+o instante do sistema: DateTime.Now
+
+Saida:
+
+Enter cliente data:
+Name: Alex Green
+Email: alex@gmail.com
+Birth date (DD/MM/YYYY): 15/03/1985
+Enter order data:
+Status: Processing
+How many items to this order? 2
+Enter #1 item data:
+Product name: TV
+Product price: 1000.00
+Quantity: 1
+Enter #2 item data:
+Product name: Mouse
+Product price: 40.00
+Quantity: 2
+ORDER SUMMARY:
+Order moment: 20/04/2018 11:25:09
+Order status: Processing
+Client: Alex Green (15/03/1985) - alex@gmail.com
+Order items:
+TV, $1000.00, Quantity: 1, Subtotal: $1000.00
+Mouse, $40.00, Quantity: 2, Subtotal: $80.00
+Total price: $1080.00
+
+CLASSES
+--------------------------------------------------------------------
+Classe Pedido
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composição2 {
+    class pedido {
+        public DateTime Momento { get; set; }
+        public Status_pedido Status { get; set; }
+        public Cliente Cliente { get; set; }
+        public List<Iten_pedido> Itens { get; set; } = new List<Iten_pedido>();
+
+        public pedido() {
+
+        }
+
+        public pedido(DateTime momento, Status_pedido status, Cliente cliente) {
+            Momento = momento;
+            Status = status;
+            Cliente = cliente;
+        }
+
+        public void AddIten(Iten_pedido iten) {
+            Itens.Add(iten);
+        }
+
+        public void RemoveIten(Iten_pedido iten) {
+            Itens.Remove(iten);
+        }
+
+        public double Total() {
+            double Soma = 0.0;
+            foreach (Iten_pedido item in Itens) {
+                Soma = Soma + item.Sub_total();
+
+            }
+            return Soma;
+        }
+
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Momento do Pedido: " + Momento.ToString("dd/MM/yyyy HH:mm:ss"));
+            sb.AppendLine("Status do pedido: " + Status);
+            sb.AppendLine("Cliente: " + Cliente);
+            sb.AppendLine("Itens do pedido: ");
+
+            foreach (Iten_pedido items in Itens) {
+                sb.AppendLine(items.ToString());
+            }
+
+            sb.AppendLine("Preço Total: " + Total());
+            return sb.ToString();
+        }
+
+    }
+}
+------------------------------------------------------------------------------------
+Classe StatusPedido (Enum)
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composição2 {
+    enum Status_pedido : int {
+        Pagamento_pendente = 0,
+        Processando = 1,
+        Enviado = 2,
+        Entrgue = 3,
+
+
+
+    }
+}
+-------------------------------------------------------------------------------
+Classe Cliente
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composição2 {
+    class Cliente {
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public DateTime Data_nascimento { get; set; }
+        
+        public Cliente() {
+
+        }
+
+        public Cliente(string nome, string email, DateTime data_nascimento) {
+            Nome = nome;
+            Email = email;
+            Data_nascimento = data_nascimento;
+        }
+
+        public override string ToString() {
+            return "Nome: " + Nome + ", Email: " + Email + ", Data de nascimento: " + Data_nascimento;
+        }
+    }
+}
+-----------------------------------------------------------------------------------------------
+Classe ItemPedido
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composição2 {
+    class Iten_pedido {
+        public int Quantidade { get; set; }
+        public double Preco { get; set; }
+        public Produto Produto { get; set; }
+
+        public Iten_pedido() {
+
+        }
+
+        public Iten_pedido(int quantidade, double preco, Produto produto) {
+            Quantidade = quantidade;
+            Preco = preco;
+            Produto = produto;
+        }
+
+        public double Sub_total() {
+           return  Quantidade * Preco;
+           
+        }
+
+        public override string ToString() {
+            return "Nome do Produto: " + Produto.Nome + ", Quantidade: " + Quantidade + ", Preço: " + Preco;
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------
+Classe Produto
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Ex_composição2 {
+    class Produto {
+        public string Nome { get; set; }
+        public double Preco { get; set; }
+
+        public Produto() {
+
+        }
+
+        public Produto(string nome, double preco) {
+            Nome = nome;
+            Preco = preco;
+        }
+    }
+}
+--------------------------------------------------------------------------------------------
+Programa Principal (Program)
+
+using System;
+
+namespace Ex_composição2 {
+    class Program {
+        static void Main(string[] args) {
+
+            Console.WriteLine("DADOS DO CLIENTE");
+
+            Console.WriteLine("Nome: ");
+            string nome = Console.ReadLine();
+
+            Console.WriteLine("Email: ");
+            string email = Console.ReadLine();
+
+            Console.WriteLine("Data de nascimento (DD/MM/YYYY) : ");
+            DateTime data_nasc = DateTime.Parse(Console.ReadLine());
+
+            Console.WriteLine("DADOS DO PEDIDO: ");
+
+            Console.WriteLine("Status: ");
+            Status_pedido status = Enum.Parse<Status_pedido>(Console.ReadLine()); //conversão para tipo Enum
+
+            Cliente cliente = new Cliente(nome, email, data_nasc);
+            pedido pedido = new pedido(DateTime.Now, status, cliente);
+
+            Console.WriteLine("quantos itens para o pedido: ");
+            int n = int.Parse(Console.ReadLine());
+
+            for (int i = 1; i <= n ; i++) {
+                Console.WriteLine($"Iten Numero {i}: ");
+
+                Console.WriteLine("Nome do Produto: ");
+                string nomeProd = Console.ReadLine();
+
+                Console.WriteLine("Preço do produto: ");
+                int preçoPro = int.Parse(Console.ReadLine());
+
+                Produto produto = new Produto(nomeProd, preçoPro);
+
+                Console.WriteLine("Quantidade: ");
+                int quant = int.Parse(Console.ReadLine());
+
+                Iten_pedido iten_Pedido = new Iten_pedido(quant, preçoPro, produto);
+
+                pedido.AddIten(iten_Pedido);
+
+          }
+
+            Console.WriteLine();
+            Console.WriteLine("Resumo do Pedido: ");
+            Console.WriteLine(pedido);
+
+        }
+    }
+}
+
+
+
+
+
+

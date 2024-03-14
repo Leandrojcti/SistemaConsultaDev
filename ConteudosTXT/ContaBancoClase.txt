@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
+
+namespace ContaBanco {
+    class Conta {
+
+        public int Conta_f { get; private set; }
+        public string Titular { get; set; }
+        public double Saldo { get; private set; }
+
+        //Costrutor 1 
+        public Conta(int conta, string titular, Double saldo) {
+            Conta_f = conta;
+            Titular = titular;
+            Saldo = saldo;
+        }
+
+        //construtor 2
+        public Conta(int conta, string titular) {
+            Conta_f = conta;
+            Titular = titular;
+        }
+
+        public void depositar(double deposito) {
+            Saldo = Saldo + deposito;
+        }
+
+        public void sacar(double saque) {
+            Saldo = Saldo - saque - 5.00;
+        }
+
+        public override string ToString() {
+            return "Conta= " + Conta_f + ", Titular= " + Titular + ", Saldo= " + Saldo.ToString("f2" , CultureInfo.InvariantCulture);
+        }
+
+
+
+
+    }
+}

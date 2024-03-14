@@ -1,0 +1,265 @@
+ 
+ C# Tipos de Variáveis possíveis de se armazenar:
+
+ bool	 Verdadeiro ou Falso (Valores booleandos)
+ byte	 0 a 255 (8 bits)
+ sbyte	 -128 a 127 (8 bits)
+ char	 Um caractere (16 bits)
+ decimal	±1.0 × 10−28 a ±7.9 × 1028 (128 bits)
+ double	 ±5.0 × 10−324 a ±1.7 × 10308 (64 bits)
+ float	 ±1.5 × 10−45 a ±3.4 × 1038 (32 bits)
+ int	 -2,147,483,648 a 2,147,483,647 (32 bits)
+ uint	 0 a 4,294,967,295 (32 bits)
+ long	 –9,223,372,036,854,775,808 a 9,223,372,036,854,775,807 (64 bits)
+ ulong	 0 a 18,446,744,073,709,551,615 (64 bits)
+ object	 Qualquer tipo.
+ short	 -32,768 a 32,767 (16 bits)
+ ushort	 0 a 65,535 (16 bits)
+ string	 Seqüência de caracteres (16 bits por caractere)
+
+ //////////////////////////////////////////////////////////////////////
+ Saíada de Dados c#
+
+ namespace PrimeiroProjeto {
+    class Program {
+        static void Main(string[] args) {
+
+            char genero = 'F';
+            int idade = 32;
+            double saldo = 10.35784;
+            String nome = "Maria";
+
+            Console.Write("Bom dia!");
+            Console.WriteLine("Boa tarde!");
+            Console.WriteLine("Boa noite!");
+            Console.WriteLine("---------------------------");
+            Console.WriteLine(genero);
+            Console.WriteLine(idade);
+            Console.WriteLine(saldo);
+            Console.WriteLine(nome);
+            Console.WriteLine(saldo.ToString("F2"));
+            Console.WriteLine(saldo.ToString("F4"));
+            Console.WriteLine(saldo.ToString("F4", CultureInfo.InvariantCulture));
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////
+  Placeholders, concatenação e interpolação
+    Demo:
+    int idade = 32;
+    double saldo = 10.35784;
+    String nome = "Maria";
+
+    Console.WriteLine("{0} tem {1} anos e tem saldo igual a {2:F2} reais", nome, idade, saldo);
+
+    Console.WriteLine($"{nome} tem {idade} anos e tem saldo igual a {saldo:F2} reais");
+
+    Console.WriteLine(nome + " tem " + idade + " anos e tem saldo igual a "
+        + saldo.ToString("F2", CultureInfo.InvariantCulture) + " reais");
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+ Operadores aritméticos
+
+  Operador            Significado      NOTAS:
+     +                   adição        1) * / % tem precedência maior que + -
+     -                 subtração       2) Exemplos:
+     *               multiplicação     3+4*2             Resultado: 11
+                                       (3 + 4) * 2       Resultado: 14
+     /                  divisão
+                                       3) Pode-se usar parêntesis à vontade
+     %              resto da divisão
+                                       4) Exemplo com mod:
+                                       17 % 3        Resultado: 2
+
+                                                         17    3
+                                                          2    5
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+ Operadores de atribuição
+    Operador            Exemplo      Significado
+       =                a = 10;     a RECEBE 10
+      +=                a += 2;   a RECEBE a + 2;
+      -=                a -= 2;   a RECEBE a - 2;
+      *=                a *= 2;   a RECEBE a * 2;
+      /=                a /= 2;   a RECEBE a / 2;
+      %=                a %= 3;   a RECEBE a % 3;
+
+////////////////////////////////////////////////////////////////////////////////
+ Operadores aritméticos / atribuição
+
+     Operador              Exemplo                  Significado
+       ++               a++; ou ++a;                 a = a + 1;
+       --               a--; ou --a;                 a = a - 1;
+
+ int a = 10;                 int a = 10;             int a = 10;
+ a++;                        int b = a++;            int b = ++a;
+ Console.WriteLine(a);       Console.WriteLine(a);   Console.WriteLine(a);
+                            Console.WriteLine(b);   Console.WriteLine(b);
+ SAÍDA:
+ 11                          SAÍDA:                  SAÍDA:
+                            11                      11
+                            10                      11
+
+///////////////////////////////////////////////////////////////////////////////////
+ Operadores comparativos
+
+  Operador             Significado
+     >                    maior
+     <                   menor
+     >=               maior ou igual
+     <=               menor ou igual
+     ==                   igual
+     !=                 diferente
+
+///////////////////////////////////////////////////////////////////////////////////
+ Operadores lógicos
+
+     Operador             Significado     NOTAS:
+       &&                      E          1) Precedência: ! > && > ||
+       ||                     OU          2) Pode-se usar parêntesis à vontade
+        !                    NÃO          3) Exemplos:
+                                          2 > 3 || 4 != 5            Resultado: true
+                                          !(2>3) && 4 != 5           Resultado: true
+ C1    C2   C1 E C2   C1   C2   C1 OU C2
+ F    F      F       F     F      F
+ F    V      F       F     V      V
+ V    F      F       V     F      V
+ V    V      V       V     V      V
+
+/////////////////////////////////////////////////////////////////////////////////
+ Estrutura "enquanto" While Exemplo:
+
+ Digitar um número e mostrar sua raiz quadrada com três casas decimais,
+        depois repetir o procedimento. Quando o usuário digitar um número
+        negativo (podendo inclusive ser na primeira vez), mostrar uma mensagem
+        "Número negativo" e terminar o programa.
+
+        Digite   um número: 25
+        5.000
+        Digite   outro número: 10
+        3.162
+        Digite   outro número : 9
+        3.000
+        Digite   outro número : -4
+        Número   negativo!
+
+
+
+
+ using System;
+ using System.Globalization;
+
+ namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+              Console.Write("Digite um número: ");
+              double x = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+              while (x >= 0.0) {
+                  double raiz = Math.Sqrt(x);
+                  Console.WriteLine(raiz.ToString("F3", CultureInfo.InvariantCulture));
+                  Console.Write("Digite outro número: ");
+                  x = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+              }
+
+              Console.WriteLine("Número negativo!");
+          }
+    }
+ }
+
+//////////////////////////////////////////////////////////////////////////////////
+ Estrutura repetitiva for Exemplo:
+
+ Digitar um número N e depois N valores inteiros. Mostrar a soma dos N
+ valores digitados.
+
+
+ Quantos números inteiros você vai digitar? 3
+ Valor #1: 10
+ Valor #2: 7
+ Valor #3: 8
+ Soma = 25
+ using System;
+
+ namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            Console.Write("Quantos números inteiros você vai digitar? ");
+            int N = int.Parse(Console.ReadLine());
+
+            int soma = 0;
+            for (int i = 1; i <= N; i++) {
+                Console.Write("Valor #{0}: ", i);
+                int valor = int.Parse(Console.ReadLine());
+                soma += valor;
+            }
+
+            Console.WriteLine("Soma = " + soma);
+        }
+    }
+ }
+
+//////////////////////////////////////////////////////////////////////////
+ if else exemplo:
+
+  Fazer um programa para ler três números inteiros e mostrar na tela o maior deles.
+
+
+        Exemplo:
+
+        Digite três números:
+        5
+        8
+        3
+        Maior = 8
+
+
+
+
+ using System;
+
+ namespace Course {
+    class Program {
+        static void Main(string[] args) {
+
+            Console.WriteLine("Digite três números:");
+            int n1 = int.Parse(Console.ReadLine());
+            int n2 = int.Parse(Console.ReadLine());
+            int n3 = int.Parse(Console.ReadLine());
+
+            double resultado = Maior(n1, n2, n3);
+
+            Console.WriteLine("Maior = " + resultado);
+        }
+
+
+        static int Maior(int a, int b, int c) {
+            int m;
+            if (a > b && a > c) {
+                m = a;
+            }
+            else if (b > c) {
+                m = b;
+            }
+            else {
+                m = c;
+            }
+            return m;
+        }
+    }
+ }
+
+
+
+
+
+
+

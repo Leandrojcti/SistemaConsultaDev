@@ -1,0 +1,332 @@
+
+Interface
+
+Interface é um tipo que define um conjunto de operações que uma
+classe (ou struct) deve implementar.
+interface IShape {
+double Area();
+double Perimeter();
+}
+Pra quê interfaces?
+• Para criar sistemas com baixo acoplamento e flexíveis.
+
+--------------------------------------------------------------
+EXEMPLO 1
+
+Problema exemplo
+Uma locadora brasileira de carros cobra um valor por hora para locações de até
+12 horas. Porém, se a duração da locação ultrapassar 12 horas, a locação será
+cobrada com base em um valor diário. Além do valor da locação, é acrescido no
+preço o valor do imposto conforme regras do país que, no caso do Brasil, é 20%
+para valores até 100.00, ou 15% para valores acima de 100.00. Fazer um
+programa que lê os dados da locação (modelo do carro, instante inicial e final da
+locação), bem como o valor por hora e o valor diário de locação. O programa
+deve então gerar a nota de pagamento (contendo valor da locação, valor do
+imposto e valor total do pagamento) e informar os dados na tela. Veja os
+exemplos.
+
+Example 1:
+Enter rental data
+Car model: Civic
+Pickup (dd/MM/yyyy hh:mm): 25/06/2018 10:30
+Return (dd/MM/yyyy hh:mm): 25/06/2018 14:40
+Enter price per hour: 10.00
+Enter price per day: 130.00
+
+INVOICE:
+Basic payment: 50.00
+Tax: 10.00
+Total payment: 60.00
+
+  	 Calculations:
+  	 Duration = (25/06/2018 14:40) - (25/06/2018 10:30) = 4:10 = 5 hours
+  	 Basic payment = 5 * 10 = 50
+  	 Tax = 50 * 20% = 50 * 0.2 = 10
+
+-------------------------------------
+PT BR
+Insira os dados de aluguel
+Modelo do carro: Civic
+Retirada (dd/MM/aaaa hh:mm): 25/06/2018 10:30
+Retorno (dd/MM/aaaa hh:mm): 25/06/2018 14:40
+Digite o preço por hora: 10,00
+Digite o preço por dia: 130,00
+
+FATURA:
+Pagamento básico: 50,00
+Imposto: 10,00
+Pagamento total: 60,00
+
+   Cálculos:
+   Duração = (25/06/2018 14h40) - (25/06/2018 10h30) = 4h10 = 5 horas
+   Pagamento básico = 5 * 10 = 50
+   Imposto = 50 * 20% = 50 * 0,2 = 10
+---------------------------------------------
+CÓDIGO
+
+Classe AluguelCarro
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Locadora.Entidades {          //RentalServices      BrasilTaxSevices          CarRental           Invoice   Vehicle
+                                        //Serviço de aluguel  Serviços fiscais Brasil   Aluguel de carros   Fatura    Veiculo
+    class AluguelCarro {                      
+        public DateTime Inicio { get; set; }
+        public DateTime Fim { get; set; }
+        public Veiculo Veiculo { get; set; }
+        public Fatura fatura { get; set; }
+
+        public AluguelCarro(DateTime inicio, DateTime fim, Veiculo veiculo) {
+            Inicio = inicio;
+            Fim = fim;
+            Veiculo = veiculo;
+            fatura = null;
+        }
+    }
+}
+
+----------------------------------
+Classe Veiculo
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Locadora.Entidades {                 //RentalServices      BrasilTaxSevices          CarRental           Invoice   Vehicle
+                                               //Serviço de aluguel  Serviços fiscais Brasil   Aluguel de carros   Fatura    Veiculo
+    class Veiculo {                                  
+        public string Modelo { get; set; }
+
+        public Veiculo(string modelo) {
+            Modelo = modelo;
+        }
+    }
+}
+
+-----------------------------
+Classe Fatura
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
+namespace Locadora.Entidades {       //RentalServices      BrasilTaxSevices          CarRental           Invoice   Vehicle
+                                     //Serviço de aluguel  Serviços fiscais Brasil   Aluguel de carros   Fatura    Veiculo                     
+    class Fatura {
+        public double Pagamentobasico { get; set; }
+        public double Imposto { get; set; }
+
+        public Fatura(double pagamento_basico, double imposto) {
+            Pagamentobasico = pagamento_basico;
+            Imposto = imposto;
+        }
+
+        public double PagamentoTotal {
+            get { return Pagamentobasico + Imposto; } //este get apenas retorna o valor de pagamentobasico + o valor de Imposto
+        }
+        public override string ToString() {
+            return "Pagamento: "
+                + Pagamentobasico.ToString("F2", CultureInfo.InvariantCulture)
+                + "\nImposto: "
+                + Imposto.ToString("F2", CultureInfo.InvariantCulture)
+                + "\n Pagamento Total: "
+                + PagamentoTotal.ToString("F2", CultureInfo.InvariantCulture);
+
+
+        }
+    }
+}
+----------------------------
+CLASSES DE SERVICOS
+
+Serviço de Aluguel
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Locadora.Entidades;
+
+namespace Locadora.Servicos {                //RentalServices      BrasilTaxSevices          CarRental           Invoice   Vehicle
+    class ServicoAluguel {                   //Serviço de aluguel  Serviços fiscais Brasil   Aluguel de carros   Fatura    Veiculo            
+        public Double PrecoHora { get; private set; }  
+        public double PrecoDia { get; private set; }
+
+        private IServicoImposto _servicoImposto;
+
+        public ServicoAluguel(double precoHora, double precoDia, IServicoImposto servicoImposto) {
+            PrecoHora = precoHora;
+            PrecoDia = precoDia;
+            _servicoImposto = servicoImposto;
+        }
+
+       
+
+        public void ProcesarFatura(AluguelCarro aluguelCarro) {
+            TimeSpan Duracao = aluguelCarro.Fim.Subtract(aluguelCarro.Inicio); //Pega a diferença entre as duas datas
+
+            double PgmBasic = 0.0;
+
+            if (Duracao.TotalHours <= 12.0) {
+                PgmBasic = PrecoHora * Math.Ceiling(Duracao.TotalHours); //pega o tipo TimeSpan no formato Horas
+                //Math.Ceiling pega a quantidade de horas ou dia e erredonda para cima (teto)
+            } else {
+                PgmBasic = PrecoDia * Math.Ceiling(Duracao.TotalDays); //pega o formato TimeSpan no formato Dias
+
+            }
+
+            double Imposto_ = _servicoImposto.Imposto(PgmBasic);
+
+            aluguelCarro.fatura = new Fatura(PgmBasic, Imposto_);
+
+        }
+    }
+}
+
+------------------------------------------------
+INTERFAÇE PARA SERVIÇO DE IMPOSTO
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Locadora.Servicos {
+    //implementação da interfaçe
+    interface IServicoImposto {
+        double Imposto(double valor);
+    }
+}
+
+//esta interfeçe define apenas o contrato para a implementação dos servicos (neste caso ServicosFiscaisBrasil)
+
+------------------------------------------------
+SERVIÇOS DE IMPOSTOS DO BRASIL (implementa a interfaçe)
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Locadora.Servicos {              //RentalServices      BrasilTaxSevices          CarRental           Invoice   Vehicle
+                                           //Serviço de aluguel  Serviços fiscais Brasil   Aluguel de carros   Fatura    Veiculo
+    class ServicosFiscaisBrasil : IServicoImposto {    //realização da interfaçe (:) //assinatura do serviço deve ser compativel com a interfaçe            
+        public double Imposto(double valor) {          
+            if (valor >=100.0) {
+                return valor * 0.15;
+
+            } else {
+                return valor * 0.2;
+            }
+        }
+    }
+}
+------------------------------------------
+PROGRAMA PRINCIPAL
+
+using System;
+using System.Globalization;
+using Locadora.Entidades;
+using Locadora.Servicos;
+
+namespace Locadora {
+    class Program {
+
+        //ENTRADA DOS DADOS
+        static void Main(string[] args) {
+            Console.WriteLine("Dados do Aluguel: ");
+
+            Console.WriteLine("Modelo do carro: ");
+            string modelo = Console.ReadLine();
+
+            Console.WriteLine("Data da retirada: (dd/MM/yyyy hh:mm)");
+            
+            DateTime inicio = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+
+            Console.WriteLine("Data da retorno: (dd/MM/yyyy hh:mm)");
+            DateTime fim = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture );
+
+            Console.WriteLine("Digite o preço por Hora: ");
+            double PrecoH = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+            Console.WriteLine("Digite o preço por dia: ");
+            double PrecoD = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+
+            //PROCESSAMENTO DOS DADOS
+
+            AluguelCarro aluguelCarro = new AluguelCarro(inicio, fim, new Veiculo(modelo));
+            //instancia um novo Aluguel (AluguelCarro) e ja instancia o modelo do veiculo (Veiculo)
+
+            ServicoAluguel servicoAluguel = new ServicoAluguel(PrecoH, PrecoD, new ServicosFiscaisBrasil());
+
+            servicoAluguel.ProcesarFatura(aluguelCarro);
+
+
+            //SAÍDAS
+
+            Console.WriteLine("FATURA");
+
+            Console.WriteLine(aluguelCarro.fatura);
+
+            
+
+            
+
+        }
+    }
+}
+-------------------------------------------------------
+
+EXPLICAÇÃO:
+
+Este código é uma implementação simplificada de um sistema de aluguel de carros em C# (C Sharp). 
+Ele está dividido em várias classes que representam diferentes partes do sistema. Vou explicar 
+cada classe e sua funcionalidade:
+
+Classe AluguelCarro:
+
+Esta classe representa um contrato de aluguel de carro.
+Ela possui as propriedades Inicio e Fim, que representam as datas de início e término do aluguel.
+Também possui as propriedades Veiculo e fatura, que representam o veículo alugado e a fatura 
+associada a este aluguel.
+O construtor recebe as datas de início e término do aluguel e o veículo alugado.
+Classe Veiculo:
+
+Esta classe representa um veículo disponível para aluguel.
+Possui a propriedade Modelo, que indica o modelo do veículo.
+O construtor recebe o modelo do veículo.
+Classe Fatura:
+
+Esta classe representa a fatura gerada para um contrato de aluguel de carro.
+Ela possui as propriedades Pagamentobasico e Imposto, que representam os valores básicos de pagamento
+ e impostos da fatura.
+Possui uma propriedade calculada PagamentoTotal que retorna a soma do pagamento básico e do imposto.
+Tem um método ToString que formata a fatura em uma string para exibição.
+Classe ServicoAluguel:
+
+Esta classe é responsável por calcular a fatura com base nas informações de aluguel.
+Possui propriedades PrecoHora e PrecoDia que representam os preços por hora e por dia do aluguel.
+Tem um campo privado _servicoImposto que é uma interface para calcular o imposto a ser aplicado.
+O construtor recebe os preços de hora e dia, bem como um serviço de imposto.
+Possui um método ProcesarFatura que calcula a fatura com base nas datas de início e término do 
+aluguel e os preços definidos.
+Interface IServicoImposto:
+
+Esta é uma interface que define um contrato para serviços de impostos.
+Possui um método Imposto que aceita um valor como entrada e retorna o valor do imposto calculado.
+Classe ServicosFiscaisBrasil:
+
+Esta classe implementa a interface IServicoImposto e fornece a lógica para calcular o imposto com
+ base nas regras fiscais brasileiras.
+O método Imposto calcula o imposto com base no valor passado como parâmetro.
+Programa Principal (Classe Program):
+
+Este é o programa principal que interage com o usuário.
+Solicita informações sobre o aluguel, como modelo do carro, datas de início e término, preços por 
+hora e por dia.
+Em seguida, cria instâncias das classes AluguelCarro, Veiculo, ServicoAluguel e ServicosFiscaisBrasil 
+para processar a fatura.
+Finalmente, exibe a fatura na saída.
+Basicamente, o programa permite que o usuário registre um contrato de aluguel de carro, calcule a fatura 
+com base nas datas e nos preços definidos, e exiba a fatura resultante. O cálculo do imposto é tratado 
+por meio da interface IServicoImposto e da classe ServicosFiscaisBrasil.

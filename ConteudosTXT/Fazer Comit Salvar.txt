@@ -1,0 +1,24 @@
+sequencia para ingressar projeto no sistema de versionamento github
+
+01 - abrir git bash dentro da pasta do projeto
+02 - git init - aniciar repositório dentro da pasta
+03 - git config --global user.name "nome user" - config nome
+04 - git config --global user.email "email user" - config email
+05 - git status - ver status dos arquivos
+06 - git add . - lancar os arquivos para area de stage para ser comitados
+07 - git commit -m "nome do commit" - add nome ao commit
+08 - git remote add origin git@github.com:leandrojcti/xadez.git - endereço do repositorio
+09 - git push -u origin main - anvia os arquivos para o git
+-------------------------------------------------------------------
+salvar novas versoes "commits"
+01 - git add . 
+02 - git commit -m "nome do novo commit" - add nome ao novo commit
+03 - git push - envia as modificações em novo commit para o git
+
+---------------------------------------------------------------------
+git log --oneline - exibe os commits gerados e seus codigos
+
+
+
+
+

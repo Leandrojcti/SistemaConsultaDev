@@ -1,0 +1,592 @@
+
+*ENCAPSULAMENTO
+Encapsulamento é um dos conceitos fundamentais da programação orientada a objetos (POO). 
+Ele consiste em agrupar os dados (atributos) e comportamentos (métodos) relacionados em 
+uma única unidade chamada classe. A classe define a estrutura e o comportamento dos objetos
+ que serão criados a partir dela.
+
+O encapsulamento tem duas principais características:
+
+Visibilidade de membros: A visibilidade determina quais membros da classe são acessíveis 
+a partir de outras classes. Existem três níveis de visibilidade comumente utilizados:
+
+public: Os membros públicos podem ser acessados por qualquer classe.
+private: Os membros privados só podem ser acessados dentro da própria classe. Eles são 
+invisíveis para outras classes.
+protected: Os membros protegidos são acessíveis dentro da própria classe e também pelas
+ classes derivadas (herdeiras).
+Métodos de acesso (getters e setters): Para garantir o acesso controlado aos atributos
+ da classe, utiliza-se métodos especiais conhecidos como getters 
+(para obter o valor de um atributo) e setters (para definir o valor de um atributo). 
+Dessa forma, é possível aplicar validações ou lógicas específicas ao acessar ou 
+modificar os dados da classe.
+
+-----------------------------------------------------------------------------------
+HERANÇA
+Herança é um conceito que permite criar novas classes baseadas em classes já existentes,
+ estendendo ou especializando suas funcionalidades. A classe original é chamada de classe
+ base ou superclasse, enquanto a nova classe criada é chamada de classe derivada ou subclasse.
+
+A herança permite que a classe derivada herde todos os atributos e métodos públicos ou 
+protegidos da classe base, economizando tempo e evitando duplicação de código. A classe 
+derivada pode adicionar novos atributos e métodos, ou sobrescrever os métodos da classe 
+base para ajustar o comportamento conforme suas necessidades específicas.
+
+----------------------------------------------------------------------------------------
+POLIMORFISMO
+Polimorfismo é outro conceito fundamental da POO, que permite que um mesmo método tenha 
+diferentes comportamentos em classes diferentes. O polimorfismo é alcançado através de duas
+ técnicas principais: polimorfismo de sobrecarga (overload) e polimorfismo de sobreposição (override).
+
+Polimorfismo de Sobrecarga: Permite que uma classe tenha vários métodos com o mesmo nome, mas 
+com diferentes parâmetros. O compilador selecionará o método a ser executado com base nos 
+parâmetros fornecidos durante a chamada do método.
+
+Polimorfismo de Sobreposição: É a capacidade de uma classe derivada fornecer uma implementação
+ específica para um método que já está definido na classe base. O método da classe derivada 
+deve ter a mesma assinatura (nome e parâmetros) que o método da classe base, e utiliza-se a 
+palavra-chave override para indicar a sobreposição.
+
+O polimorfismo permite escrever código mais flexível e genérico, tornando-o mais fácil de 
+ser estendido e mantido. Ao trabalhar com polimorfismo, é possível tratar objetos derivados
+ como objetos da classe base, o que facilita a manipulação e a organização do código.
+
+
+    Exercício resolvido
+
+Uma empresa possui funcionários próprios e terceirizados.
+Para cada funcionário, deseja-se registrar nome, horas
+trabalhadas e valor por hora. Funcionários terceirizados
+possuem ainda uma despesa adicional.
+
+O pagamento dos funcionários corresponde ao valor da hora
+multiplicado pelas horas trabalhadas, sendo que os
+funcionários terceirizados ainda recebem um bônus
+correspondente a 110% de sua despesa adicional.
+
+Fazer um programa para ler os dados de N funcionários (N
+fornecido pelo usuário) e armazená-los em uma lista. Depois
+de ler todos os dados, mostrar nome e pagamento de cada
+funcionário na mesma ordem em que foram digitados.
+
+Construa o programa conforme projeto ao lado. Veja
+
+Enter the number of employees: 3
+Employee #1 data:
+Outsourced (y/n)? n                                 
+Name: Alex
+Hours: 50
+Value per hour: 20.00                     
+Employee #2 data:
+Outsourced (y/n)? y                        
+Name: Bob
+Hours: 100
+Value per hour: 15.00                             
+Additional charge: 200.00
+Employee #3 data:                       
+Outsourced (y/n)? n
+Name: Maria                                   
+Hours: 60
+Value per hour: 20.00
+
+PAYMENTS:
+Alex - $ 1000.00
+Bob - $ 1720.00
+Maria - $ 1200.00
+
+PT-BR
+Digite o número de funcionários: 3
+Dados do funcionário nº 1:
+Terceirizado (s/n)? n
+Nome: Alex
+Horas: 50
+Valor por hora: 20,00
+Dados do funcionário nº 2:
+Terceirizado (s/n)? y
+Nome: Bob
+Horas: 100
+Valor por hora: 15,00
+Custo adicional: 200,00
+Dados do funcionário nº 3:
+Terceirizado (s/n)? n
+Nome: Maria
+Horas: 60
+Valor por hora: 20,00
+
+PAGAMENTOS:
+Alexandre - $ 1000,00
+Bob - $ 1720,00
+Maria - $ 1200,00
+
+--------------------------
+// 
+
+CÓDIGO
+
+CLASSE FUNCIONÁRIO
+
+using System;
+using System.Collections.Generic;
+
+namespace Employee {
+    class Program {
+        static void Main(string[] args) {
+
+            List<Funcionario> funcionarios = new List<Funcionario>();
+
+            Console.WriteLine("Digite o numero de funcionarios: ");
+            int n = int.Parse(Console.ReadLine());
+            for (int i = 1; i <= n; i++) {
+                Console.WriteLine($"Dados do Funcionario #{i}: ");
+
+                Console.WriteLine("terceirizado? S/N ");
+                string res = Console.ReadLine();
+
+
+                Console.WriteLine("Nome: ");
+                string nome = Console.ReadLine();
+
+                Console.WriteLine("Horas : ");
+                int horas = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Valor por horas : ");
+                double valor_horas = double.Parse(Console.ReadLine());
+
+                if (res == "s" || res == "S") {
+
+                    Console.WriteLine("Adicional por horas : ");
+                    double adicional_horas = double.Parse(Console.ReadLine());
+
+                    funcionarios.Add(new funcionarioTerceirizado(nome, horas, valor_horas, adicional_horas));
+                } else if (res == "n" || res == "N") {
+                    funcionarios.Add(new Funcionario(nome, horas, valor_horas));
+                } else {
+                    Console.WriteLine("Opção Inválida!");
+                }
+            }
+
+                Console.WriteLine();
+                Console.WriteLine("Pgamentos: ");
+
+                foreach (Funcionario item in funcionarios) {
+                    Console.WriteLine(item.Nome + " - $ " + item.Pagamento());
+                }
+
+          }
+    }
+}
+
+-------------------------------------
+CLASSE FUNCIONÁRIO TERCEIRIZADO
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Employee {
+    class funcionarioTerceirizado : Funcionario {
+        public double PagmAdicional { get; set; }
+
+        public funcionarioTerceirizado() {
+
+        }
+        public funcionarioTerceirizado(string nome, int horas, double valorHora, double pagmAdicional) : base(nome, horas, valorHora) {
+            PagmAdicional = pagmAdicional;
+
+        }
+
+        public override double Pagamento() {
+            return base.Pagamento() + 1.1 * PagmAdicional;
+        }
+
+
+    }
+
+}
+
+------------------------------------------
+PROGRAM
+
+using System;
+using System.Collections.Generic;
+
+namespace Employee {
+    class Program {
+        static void Main(string[] args) {
+
+            List<Funcionario> funcionarios = new List<Funcionario>();
+
+            Console.WriteLine("Digite o numero de funcionarios: ");
+            int n = int.Parse(Console.ReadLine());
+            for (int i = 1; i <= n; i++) {
+                Console.WriteLine($"Dados do Funcionario #{i}: ");
+
+                Console.WriteLine("terceirizado? S/N ");
+                string res = Console.ReadLine();
+
+
+                Console.WriteLine("Nome: ");
+                string nome = Console.ReadLine();
+
+                Console.WriteLine("Horas : ");
+                int horas = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Valor por horas : ");
+                double valor_horas = double.Parse(Console.ReadLine());
+
+                if (res == "s" || res == "S") {
+
+                    Console.WriteLine("Adicional por horas : ");
+                    double adicional_horas = double.Parse(Console.ReadLine());
+
+                    funcionarios.Add(new funcionarioTerceirizado(nome, horas, valor_horas, adicional_horas));
+                } else if (res == "n" || res == "N") {
+                    funcionarios.Add(new Funcionario(nome, horas, valor_horas));
+                } else {
+                    Console.WriteLine("Opção Inválida!");
+                }
+            }
+
+                Console.WriteLine();
+                Console.WriteLine("Pgamentos: ");
+
+                foreach (Funcionario item in funcionarios) {
+                    Console.WriteLine(item.Nome + " - $ " + item.Pagamento());
+                }
+
+
+          }
+    }
+}
+
+
+------------------------------------
+EXPLICAÇAO
+
+A classe Funcionario é a classe base para representar um funcionário comum da empresa. Ela possui três propriedades: 
+Nome, Horas e ValorHora, que representam o nome do funcionário, a quantidade de horas trabalhadas e o valor pago por 
+hora de trabalho, respectivamente.
+
+O construtor da classe Funcionario permite criar um objeto dessa classe passando os valores para as propriedades Nome, 
+Horas e ValorHora.
+
+O método Pagamento() é virtual, o que significa que ele pode ser sobrescrito por classes derivadas, como veremos mais 
+tarde na classe FuncionarioTerceirizado. O método calcula o pagamento do funcionário multiplicando a quantidade de horas 
+trabalhadas pelo valor pago por hora. 
+
+--------------------------------------------------------------------------------------------------------------------------------
+A classe FuncionarioTerceirizado é uma classe derivada da classe Funcionario (HERANÇA), que representa um funcionário terceirizado 
+da empresa. Além das propriedades Nome, Horas e ValorHora herdadas da classe base, ela possui a propriedade adicional 
+PagmAdicional, que representa o pagamento adicional que esse funcionário terceirizado recebe.
+
+O construtor da classe FuncionarioTerceirizado recebe os parâmetros necessários para inicializar as propriedades 
+Nome, Horas, ValorHora e PagmAdicional, repassando as informações relevantes para a classe base usando base(nome, horas, valorHora).
+
+O método Pagamento() é sobrescrito na classe FuncionarioTerceirizado, e ele calcula o pagamento do funcionário terceirizado
+ acrescentando 10% do valor do pagamento adicional à base salarial calculada pela classe base.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+O programa principal (Program) permite que o usuário insira informações sobre funcionários (comuns e terceirizados) e, em seguida, 
+exibe os pagamentos correspondentes para cada um dos funcionários.
+
+A lista funcionarios é usada para armazenar os objetos de funcionários criados. O programa solicita ao usuário que digite o número de 
+funcionários que deseja cadastrar e, em seguida, entra em um loop para obter as informações individuais de cada funcionário.
+
+Se o funcionário for terceirizado, o programa solicita o pagamento adicional (atributo específico do funcionário terceirizado) e cria 
+um objeto da classe FuncionarioTerceirizado, adicionando-o à lista funcionarios. Caso contrário, cria um objeto da classe Funcionario 
+e adiciona à lista. (POLIMORFISMO)
+
+Por fim, o programa percorre a lista de funcionários e exibe o nome e o pagamento calculado para cada um deles, utilizando o método 
+Pagamento(), que pode ser o método da classe Funcionario ou da classe FuncionarioTerceirizado, dependendo do tipo de funcionário.
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+EXERCÍCIO 2
+
+Fazer um programa para ler os dados de N contribuintes (N fornecido pelo usuário), os quais
+podem ser pessoa física ou pessoa jurídica, e depois mostrar o valor do imposto pago por cada um,
+bem como o total de imposto arrecadado.
+
+Os dados de pessoa física são: nome, renda anual e gastos com saúde. Os dados de pessoa jurídica
+são nome, renda anual e número de funcionários. As regras para cálculo de imposto são as
+seguintes:
+
+Pessoa física: pessoas cuja renda foi abaixo de 20000.00 pagam 15% de imposto. Pessoas com
+renda de 20000.00 em diante pagam 25% de imposto. Se a pessoa teve gastos com saúde, 50%
+destes gastos são abatidos no imposto.
+Exemplo: uma pessoa cuja renda foi 50000.00 e teve 2000.00 em gastos com saúde, o imposto
+fica: (50000 * 25%) - (2000 * 50%) = 11500.00
+
+Pessoa jurídica: pessoas jurídicas pagam 16% de imposto. Porém, se a empresa possuir mais de 10
+funcionários, ela paga 14% de imposto.
+Exemplo: uma empresa cuja renda foi 400000.00 e possui 25 funcionários, o imposto fica:
+400000 * 14% = 56000.00
+
+Enter the number of tax payers: 3
+Tax payer #1 data:
+Individual or company (i/c)? i
+Name: Alex
+Anual income: 50000.00
+Health expenditures: 2000.00
+Tax payer #2 data:
+Individual or company (i/c)? c
+Name: SoftTech
+Anual income: 400000.00
+Number of employees: 25
+Tax payer #3 data:
+Individual or company (i/c)? i
+Name: Bob
+Anual income: 120000.00
+Health expenditures: 1000.00
+
+TAXES PAID:
+Alex: $ 11500.00
+SoftTech: $ 56000.00
+Bob: $ 29500.00
+
+TOTAL TAXES: $ 97000.00
+-------------------------------------
+PT-BR
+Digite o número de contribuintes: 3
+Dados do contribuinte nº 1:
+Pessoa física ou jurídica (i/c)? eu
+Nome: Alex
+Renda anual: 50.000,00
+Despesas com saúde: 2.000,00
+Dados do contribuinte nº 2:
+Pessoa física ou jurídica (i/c)? c
+Nome: SoftTech
+Renda anual: 400.000,00
+Número de funcionários: 25
+Dados do contribuinte nº 3:
+Pessoa física ou jurídica (i/c)? eu
+Nome: Bob
+Renda anual: 120.000,00
+Despesas com saúde: 1000,00
+
+IMPOSTOS PAGOS:
+Alexandre: $ 11500,00
+SoftTech: $ 56.000,00
+Bob: $ 29500,00
+
+IMPOSTOS TOTAIS: $ 97.000,00
+ 
+---------------------------------
+CÓDIGO
+
+CLASSE CONTRIBUENTE
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Fixacao.Entidades {
+    abstract class Contribuente {  //classe abstrata genérica, e usada como base para as outras classes
+        public string Nome { get; set; }
+        public double RendaAnual { get; set; }
+
+        public Contribuente() {
+
+        }
+
+        protected Contribuente(string nome, double rendaAnual) {
+            Nome = nome;
+            RendaAnual = rendaAnual;
+        }
+
+        public abstract double Imposto();
+        //Metodo abstrado sem implementação para ser usado nas classes atraves de sobreposição ("OVERRRIDE")
+
+    }
+}
+
+---------------------------------------------------
+CLASSE INDIVIDUAL
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Fixacao.Entidades {
+    class Individual : Contribuente { //Herdando recursos da classe Contribuente
+        public double DespessasMedicas { get; set; }
+                  
+        public Individual(string nome, double rendaAnual, double despessasMedicas) : base(nome, rendaAnual) {
+            DespessasMedicas = despessasMedicas;  //Implementação dos atributos contidos na classe herdada nesse construtor
+        }
+
+        public override double Imposto() {
+            if (RendaAnual < 20000.0) {
+                return RendaAnual * 0.15 - DespessasMedicas * 0.5;
+            } else {
+                return RendaAnual * 0.25 - DespessasMedicas * 0.5;
+            }
+        }
+    }
+}
+
+-----------------------------------------------------------
+CLASSE EMPRESSA
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Fixacao.Entidades {
+    class Empresa : Contribuente {
+
+        public int NumFuncionarios { get; set; }
+
+        public Empresa() {
+
+        }
+
+        public Empresa(string nome, double rendaAnual, int numFuncionarios) :base(nome, rendaAnual) {
+            NumFuncionarios = numFuncionarios;
+        }
+
+        public override double Imposto() {
+            if (NumFuncionarios < 10 ) {
+                return RendaAnual * 0.16;
+            } else {
+                return RendaAnual * 0.14;
+            }
+        }
+    }
+    }
+
+
+--------------------------------------------------
+PROGRAM
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Fixacao.Entidades;
+
+namespace Fixacao {
+    class Program {
+        static void Main(string[] args) {
+
+            List<Contribuente> contribuentes = new List<Contribuente>();   /// implementação da lista para receber contribuentes
+                  //tipo           nome                inicialização
+
+            Console.WriteLine("Quantidade de contribuentes: ");
+            int n = int.Parse(Console.ReadLine());
+
+            for (int i = 1; i <= n; i++) {  //Laço para add a quantidade de vezes definido na variavel n
+
+                //Coleta dos dados 
+                Console.WriteLine($"Contribuente #{i}: ");
+                Console.WriteLine("Individual ou Empresa? (i/e): ");
+                char res = char.Parse(Console.ReadLine());             
+
+                Console.WriteLine("Nome: ");
+                string nome = Console.ReadLine();
+
+                Console.WriteLine("Ganhos Anuais: ");
+                double ganhos = double.Parse(Console.ReadLine());
+
+                 /////////////////////////////////////////////////////////////////
+
+                if (res == 'i') {
+                    Console.WriteLine("Despessas Medicas: ");
+                    double DesMedicas = double.Parse(Console.ReadLine());
+
+                    contribuentes.Add(new Individual(nome, ganhos, DesMedicas));
+                } else {
+                    Console.WriteLine("Numero de Funcionarios: ");
+                    int num_funcio = int.Parse(Console.ReadLine());
+
+                    contribuentes.Add(new Empresa(nome, ganhos, num_funcio));
+                }
+
+            }
+
+            double Soma = 0.0;
+
+            Console.WriteLine();
+
+            Console.WriteLine("Impostos Pagos: ");
+
+            foreach (Contribuente item in contribuentes) { //laço para percorrer a lista 
+                    //Lista      nome dado  nome lista com dados
+
+
+                Double v_imposto = item.Imposto();   //cria a variavel para receber o valor da soma do imposto
+
+                Console.WriteLine(item.Nome+ ": $ " + v_imposto.ToString("f2", CultureInfo.InvariantCulture));
+               
+
+                Soma += v_imposto;   //Para cada iten da coleção variavel soma recebe ela mesmo mais a soma
+            }
+
+            Console.WriteLine("Total de impostos: $ " + Soma.ToString("f2", CultureInfo.InvariantCulture));
+
+         }
+    }
+}
+
+---------------------------------------------------------------
+EXPLICAÇÃO
+
+A classe Contribuente é uma classe abstrata que serve como base para outras classes específicas de contribuintes, 
+como Individual e Empresa. Ela possui duas propriedades: Nome e RendaAnual, que representam o nome do contribuinte
+ e sua renda anual, respectivamente.
+
+O construtor da classe Contribuente é protegido (protected) para que não seja possível criar objetos dessa classe
+ diretamente, mas permite que as classes derivadas usem esse construtor ao chamar base(nome, rendaAnual).
+
+A classe Contribuente também possui um método abstrato chamado Imposto(), que não tem implementação nesta classe, 
+mas será sobrescrito nas classes derivadas para calcular o imposto específico de cada tipo de contribuinte.
+
+------------------------------------------------------------------------------------------------------------------
+A classe Individual é uma classe derivada da classe Contribuente, representando um contribuinte do tipo individual. 
+Além das propriedades Nome e RendaAnual herdadas da classe base, ela possui a propriedade DespesasMedicas, 
+que representa as despesas médicas dedutíveis desse contribuinte.
+
+O construtor da classe Individual recebe os parâmetros necessários para inicializar as propriedades Nome, RendaAnual 
+e DespesasMedicas, repassando as informações relevantes para a classe base usando base(nome, rendaAnual).
+
+O método Imposto() é sobrescrito na classe Individual e calcula o imposto que o contribuinte individual deve pagar, 
+levando em consideração suas despesas médicas dedutíveis.
+
+------------------------------------------------------------------------------------------------------------------
+A classe Empresa é outra classe derivada da classe Contribuente, representando um contribuinte do tipo empresa. 
+Ela possui a propriedade NumFuncionarios, que representa o número de funcionários da empresa.
+
+O construtor da classe Empresa recebe os parâmetros necessários para inicializar as propriedades Nome, RendaAnual 
+e NumFuncionarios, repassando as informações relevantes para a classe base usando base(nome, rendaAnual).
+
+O método Imposto() é sobrescrito na classe Empresa e calcula o imposto que a empresa deve pagar, com base no número
+ de funcionários que ela possui.
+
+------------------------------------------------------------------------------------------------------------------
+O programa principal (Program) é responsável por interagir com o usuário, solicitar informações sobre os contribuintes 
+e calcular os impostos de acordo com o tipo de contribuinte (individual ou empresa).
+
+O programa começa criando uma lista contribuentes que será usada para armazenar objetos de contribuintes. O usuário é 
+solicitado a informar a quantidade de contribuintes que deseja cadastrar.
+
+Em seguida, o programa entra em um loop para coletar informações individuais sobre cada contribuinte. O usuário precisa
+ informar se o contribuinte é do tipo individual ou empresa, o nome, os ganhos anuais e, dependendo do tipo, outras 
+informações relevantes, como despesas médicas para individuais e o número de funcionários para empresas.
+
+Os objetos dos contribuintes (individual ou empresa) são criados e adicionados à lista contribuentes.
+
+Após coletar as informações de todos os contribuintes, o programa exibe os impostos pagos por cada um e a soma total dos 
+impostos pagos. Isso é feito percorrendo a lista contribuentes com um loop foreach, calculando o imposto de cada 
+contribuinte usando o método Imposto() da classe base (que é sobrescrito nas classes derivadas) e acumulando a soma 
+total dos impostos pagos.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,213 @@
+
+ Classe
+ • É um tipo estruturado que pode conter (membros):
+ • Atributos (dados / campos)
+ • Métodos (funções / operações)
+ • A classe também pode prover muitos outros recursos, tais como:
+ • Construtores
+ • Sobrecarga
+ • Encapsulamento
+ • Herança
+ • Polimorfismo
+ • Exemplos:
+ • Entidades: Produto, Cliente, Triangulo
+ • Serviços: ProdutoService, ClienteService, EmailService, StorageService
+ • Controladores: ProdutoController, ClienteController
+ • Utilitários: Calculadora, Compactador
+ • Outros (views, repositórios, gerenciadores, etc.
+
+ Exemplo:
+
+ using System;
+ using System.Collections.Generic;
+ using System.Text;
+ using System.Globalization;
+
+ namespace estoque {
+    class Produto {
+        public string Nome;
+        public double Preco;
+        public int Quantidade;
+
+        public double ValorTotalEstoque() {
+            return Quantidade * Preco;
+        }
+        public void AdicionarProduto(int qtde) {
+            Quantidade = Quantidade + qtde;
+        }
+
+        public void RemoverProduto(int qtde) {
+            Quantidade = Quantidade - qtde;
+        }
+
+        public override string ToString() {
+            return Nome + ", R$ " + Preco.ToString("F3", CultureInfo.InvariantCulture) + ", " + Quantidade + " unidades, Total R$ " + ValorTotalEstoque().ToString("F3", CultureInfo.InvariantCulture); 
+        }
+
+
+
+    }
+}
+
+PROGRAM:
+
+ using System;
+ using System.Globalization;
+
+
+ namespace estoque {
+    class Program {
+        static void Main(string[] args) {
+
+            Produto P = new Produto();
+
+
+            Console.WriteLine("Dados do produto");
+
+            Console.Write("Nome: ");
+            P.Nome = Console.ReadLine();
+
+            Console.Write("Preço: ");
+            P.Preco = double.Parse(Console.ReadLine());
+
+            Console.Write("Quantidade no estoque:");
+            P.Quantidade = int.Parse(Console.ReadLine());
+
+            Console.WriteLine(P);
+
+            Console.Write("Quantidade a ser adicionada no estoque: ");
+            int qtde = int.Parse(Console.ReadLine());
+            P.AdicionarProduto(qtde);
+
+            Console.WriteLine("Dados atualizados " + P);
+
+            Console.Write("Quantidade a ser removida no estoque: ");
+             qtde = int.Parse(Console.ReadLine());
+            P.RemoverProduto(qtde);
+
+            Console.WriteLine("Dados atualizados " + P);
+
+/////////////////////////////////////////////////////////////////////////////
+
+Seguno exemplo:
+
+Conta Banco com dois construtor
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
+
+namespace ContaBanco {
+    class Conta {
+
+        public int Conta_f { get; private set; }
+        public string Titular { get; set; }
+        public double Saldo { get; private set; }
+
+        //Costrutor 1 
+        public Conta(int conta, string titular, Double saldo) {
+            Conta_f = conta;
+            Titular = titular;
+            Saldo = saldo;
+        }
+
+        //construtor 2
+        public Conta(int conta, string titular) {
+            Conta_f = conta;
+            Titular = titular;
+        }
+
+        public void depositar(double deposito) {
+            Saldo = Saldo + deposito;
+        }
+
+        public void sacar(double saque) {
+            Saldo = Saldo - saque - 5.00;
+        }
+
+        public override string ToString() {
+            return "Conta= " + Conta_f + ", Titular= " + Titular + ", Saldo= " + Saldo.ToString("f2" , CultureInfo.InvariantCulture);
+        }
+
+
+
+
+    }
+}
+ 
+
+PROGRAM
+
+using System;
+
+namespace ContaBanco {
+    class Program {
+        static void Main(string[] args) {
+
+            Conta C;    //define um tipo no caso e a propria classe e o nome(C) que vai receber a instacia
+
+            Console.WriteLine("Numero da conta: ");
+            int conta = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Titular da conta: ");           
+            string titular = Console.ReadLine();
+
+            Console.WriteLine("Havera deposito inicial? S/N ");
+            string option = Console.ReadLine();
+
+            if (option == "S" || option == "s") {
+                Console.WriteLine("Digite o valor do deposito inicial: ");
+                double Saldo = double.Parse(Console.ReadLine());
+
+                C = new Conta(conta, titular, Saldo);    //instaciação passando os parametros para o construtor de 3 argumentos
+
+            } else {
+
+                C = new Conta(conta, titular);   //instaciação passando os parametros para o construtor de 2 argumentos
+
+            } 
+            
+
+            Console.WriteLine("Dados da conta:");
+            Console.WriteLine(C);
+            Console.WriteLine();
+
+            Console.WriteLine("Digite um valor para depósito: ");
+            double deposito = double.Parse(Console.ReadLine());
+
+            C.depositar(deposito);
+
+            Console.WriteLine("Dados da conta atualizados: ");
+            Console.WriteLine(C);
+            Console.WriteLine();
+
+            Console.WriteLine("Digite um valor para saque: ");
+            double saque = double.Parse(Console.ReadLine());
+
+            C.sacar(saque);
+
+
+            Console.WriteLine("Dados da conta atualizados: ");
+            Console.WriteLine(C);
+            Console.WriteLine();
+
+
+
+
+
+
+
+
+        }
+    }
+}
+
+
+
+
+
+
+ 
+
+

@@ -1,0 +1,49 @@
+Openusing System;
+using System.IO;
+
+namespace LerArquivosTxt
+{
+	class Program>
+	{
+		static void Main(string[] args)
+		{
+			Console.WriteLine("Leitura do Arquivo");
+
+			//armazena o caminho do arquivo na variavel Caminho
+			string Caminho = "F:/Leandro Estudos faculdade/CURSO C# UDEMY em andamento/exercicios/Ler Arquivos Txt/LerArquivosTxt/GIT HUB PASSOS SALVAR.txt";
+
+			//bloco using, carrega o arquivo de texto
+			using (StreamReader sr = File.OpenText(Caminho))
+			{
+				while (!sr.EndOfStream) //Enquanto nao chegar no fim do texto (!) armazena todas as linhas na var Texto;
+				{
+					string Texto = sr.ReadLine();
+					Console.WriteLine(Texto);
+
+
+				}
+				
+
+			}
+		}
+	}
+}
+
+
+
+///////////////////Operação usando vetor de String/////////////////////////
+
+  using (StreamReader sr = File.OpenText(Caminho)) {   //Função para abrir o arquivo, informando a variavel com  o caminho do arquivo
+                    while (!sr.EndOfStream) {         //enquanto  nao chegar no fim do arquivo (line)(EndOfStream) Imprimir cada linha 
+
+
+                       // string line = sr.ReadLine();              Faz a leitura da linha inteira
+                        string[] line = sr.ReadLine().Split(' ');// Cria um vetor de string recortando cada espaço em branco
+                        string Nome = line[0];                   // Recebe Primeiro recorte do Split em formato string [0]
+                        DateTime Instante = DateTime.Parse(line[1]);   // Recebe o segundo recorte do Split em formato DateTime [1]
+
+                        RegistrosLista.Add(new RegistroLogs(Nome, Instante));
+
+                        Console.WriteLine(line[0]);
+                        Console.WriteLine();
+                        Console.WriteLine(line[1]);
